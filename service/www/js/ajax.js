@@ -10,8 +10,11 @@ var myApp = new Framework7({
     swipeBackPage: true,
     modalTitle: "Descartes Lab",
     modalButtonCancel: "Cancelar",
-    init: false,
     modalPreloaderTitle: "Carregando...",
+    smartSelectBackText: 'Voltar',
+    smartSelectPopupCloseText: 'Fechar',
+    smartSelectPickerCloseText: 'Definir',
+    init: false,
     preloadPreviousPage : false,
     uniqueHistory : true
 });
@@ -99,7 +102,7 @@ $$(document).on('pageInit', function (e) {
 
     if(page.name === 'login')
     {
-      remover_panel();
+      remover_menu();
       if(localStorage.getItem("login_id") != null)
         mainView.router.loadPage('mapa.html');
     }
@@ -111,28 +114,18 @@ $$(document).on('pageInit', function (e) {
       }
     }
 
-    if(page.name == 'mapa')
-    {
-      criar_menu();
-      inicializar_map();
-      mapa_refresh();
-    }
-
     if(page.name == 'perfil')
     {
-      criar_menu();
       carregar_perfil();
     }
 
     if(page.name == 'enderecos')
     {
-      criar_menu();
       carregar_enderecos();
     }
 
     if(page.name == 'agendamentos')
     {
-      criar_menu();
       carregar_agendamentos();
     }
     if(page.name == 'agendar')
@@ -199,19 +192,24 @@ function aplicar_filtro()
 function inicializar()
 {
   myApp.onPageInit('index', function (page) {
-    alert("BATATATATATATA");
      if(localStorage.getItem("login_id") == null)
       {
-        remover_panel();
-        mainView.router.loadPage('login.html');
+        remover_menu();
+        mostrar_tela_login();
+        criar_menu();
       }
       else
       {
         criar_menu();
-        mainView.router.loadPage('mapa.html');
+        mostrar_tela_mapa();
       }
   }).trigger();
   myApp.init();
+  if(localStorage.getItem("login_id") != null)
+  {
+    inicializar_map();
+    mapa_refresh();
+  }
   //localStorage.removeItem("tutorial");
 }
 
@@ -388,7 +386,7 @@ function carregar_enderecos()
     {
       json_dados = ajax_method(false,'endereco.select_by_id',retorno[i].endereco_id);
       var endereco = JSON.parse(json_dados);
-      html += '<li class="accordion-item swipeout"><a href="#" class="item-content swipeout-content item-link">'+
+      html += '<li class="accordion-item swipeout"><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
                 '<div class="item-inner" >'+
                   '<div class="item-title">';
       if (localStorage.getItem("lat_padrao")==endereco[0].latitude && localStorage.getItem("long_padrao")==endereco[0].longitude)
@@ -506,7 +504,91 @@ function criar_menu()
   document.getElementById("local_panel").innerHTML = panel_html;
 }
 
-function remover_panel()
+function mostrar_tela_mapa()
+{
+  document.getElementById("index_page").innerHTML = '<div data-page="mapa" class="page navbar-fixed">'+
+                                                      '<div class="navbar" id="ba">'+
+                                                        '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
+                                                          '<div class="left">'+
+                                                            '<a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>'+
+                                                            '<div id="hd">'+
+                                                              'DescartesLab'+
+                                                            '</div>'+
+                                                          '</div>'+
+                                                          '<div id="hc" class="hi">'+
+                                                            '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
+                                                              '<div class="searchbar-input">'+
+                                                                '<input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">'+
+                                                              '</div>'+
+                                                              '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancel</a>'+
+                                                            '</form>'+
+                                                          '</div>'+
+                                                          '<div class="center">'+
+                                                            '<div id="hb" class="hi" onclick="cancela_rota();">'+
+                                                              'Apagar Rota<i class="fa fa-remove"></i>'+
+                                                            '</div>'+
+                                                          '</div>'+
+                                                          '<div class="right" style="margin-left: 0 !important">'+
+                                                            '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
+                                                              '<i class="fa fa-filter"></i>'+
+                                                            '</a>'+
+                                                            '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
+                                                              '<i class="fa fa-refresh"></i>'+
+                                                            '</a>'+
+                                                            '<a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;">'+
+                                                              '<i class="fa fa-search" id="loc"></i>'+
+                                                            '</a>'+
+                                                          '</div>'+
+                                                        '</div>'+
+                                                      '</div>'+
+                                                      '<div class="page-content">'+
+                                                        '<div id="map"></div>'+
+                                                        '<div id="rightpanel"></div>'+
+                                                      '</div>'+
+                                                    '</div>';
+
+}
+
+function mostrar_tela_login()
+{
+  document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
+                                                      '<div class="page-content login-screen-content">'+
+                                                        '<div class="login-screen-title">Descartes Lab</div>'+
+                                                          '<div class="list-block">'+
+                                                            '<ul>'+
+                                                              '<li class="item-content">'+
+                                                                '<div class="item-inner">'+
+                                                                  '<div class="item-title label">Email</div>'+
+                                                                  '<div class="item-input">'+
+                                                                    '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@batata.com" required>'+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</li>'+
+                                                              '<li class="item-content">'+
+                                                                '<div class="item-inner">'+
+                                                                  '<div class="item-title label">Senha</div>'+
+                                                                  '<div class="item-input">'+
+                                                                    '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</li>'+
+                                                            '</ul>'+
+                                                          '</div>'+
+                                                          '<div class="list-block">'+
+                                                            '<ul>'+
+                                                              '<li>'+
+                                                                '<center><button onclick="login();" class="item-link button" style="width: 90%;">Entrar</button></center>'+
+                                                              '</li>'+
+                                                            '</ul>'+
+                                                            '<div class="list-block-label">'+
+                                                              '<p><a href="cadastro.html" class="button">Não possui cadastro? Clique aqui!</a></p>'+
+                                                            '</div>'+
+                                                          '</div>'+
+                                                      '</div>'+
+                                                    '</div>';
+}
+
+function remover_menu()
 {
   document.getElementById("local_panel").innerHTML = '<p>Você não realizou o login!</p>';
 }
@@ -524,9 +606,7 @@ function login()
     if (id != 0)
     {
       localStorage.setItem("login_id",id);
-      myApp.alert('Login realizado com sucesso!',function (){
-        mainView.router.loadPage('mapa.html');
-      });
+      mainView.router.refreshPage();
     }
     else
     {
@@ -538,9 +618,9 @@ function login()
 
 function logout()
 {
-  remover_panel();
+  remover_menu();
   localStorage.removeItem("login_id");  
-  mainView.router.loadPage('login.html');
+  mainView.router.refreshPage();
 }
 
 function select_pontos()
@@ -749,7 +829,7 @@ function cadastro()
     {
       myApp.hidePreloader();
       localStorage.setItem("login_id",adduser);
-      mainView.router.loadPage('mapa.html');
+      mainView.router.refreshPage();
     }
     else
     {
@@ -802,7 +882,7 @@ function editar_endereco()
       var json_dados = ajax_method(false,'endereco.update',document.getElementById('id').value,document.getElementById('rua').value,document.getElementById('numero').value,document.getElementById('complemento').value,document.getElementById('cep').value,document.getElementById('bairro').value,document.getElementById('estado').value,document.getElementById('cidade').value,document.getElementById('pais').value,document.getElementById('lat').value,document.getElementById('long').value);
       if (json_dados) {
          myApp.hidePreloader();
-         mainView.router.loadPage('enderecos.html');
+         mainView.router.back();
       }
       else{
         myApp.hidePreloader();
