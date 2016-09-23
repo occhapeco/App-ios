@@ -1,28 +1,26 @@
-<div data-page="enderecos" class="page navbar-fixed">
+<div data-page="enderecos" class="page navbar-through">
   <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
-        <a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>
-        <div id="hd">
-          Endereços
-        </div>
+        <a href="#" class="link">
+                <i class="icon icon-back"></i>
+                <span>Voltar</span>
+        </a>
       </div>
       <div class="right">
-        <a onclick="carregar_enderecos();" class="link icon-only" id="refresh" style="color:#FFFFFF !important; width:56px !important;">
+        <a onclick="carregar_enderecos();" class="link icon-only" id="refresh" style=" width:30px !important;">
           <i class="fa fa-refresh"></i>
+        </a>
+        <a href="addendereco.html" class="link icon-only" style=" width:30px !important;">
+          <i class="fa fa-plus"></i>
         </a>
       </div>
     </div>
   </div>
   <div class="page-content">
-
  <div class="list-block accordion-list" style="margin:0 !important;">
     <ul id="ulenderecos">
-    </ul>
-
-    <a href="addendereco.html" class="floating-button" id="popover-btn">
-      <i class="fa fa-plus"></i>
-    </a>
+    </ul>    
   </div>
 </div>
 </div>
