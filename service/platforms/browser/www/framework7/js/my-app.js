@@ -2,8 +2,6 @@
 var myApp = new Framework7({
     pushState: true,
     animatePages: true,
-    swipePanel: "left",
-    swipePanelActiveArea: 20,
     modalTitle: "Descartes Lab",
     modalButtonCancel: "Cancelar",
     modalPreloaderTitle: "Carregando...",
@@ -23,8 +21,8 @@ var mainView = myApp.addView('.view-main', {
 var o = true;
 
 function inverte () {
-    var swidth = $$("#ba").width() - $$("#searche").width() - $$("#bc").width() - 16; 
-    swidth+='px';
+    var swidth = $$("#ba").width() ; 
+    swidth+='px !important';
     $$("#hc").css('width',swidth);
 
     if (o) 
@@ -34,7 +32,7 @@ function inverte () {
         $$("#hc").css('width',swidth );
         $$("#hc").toggleClass('hi');
         $$("#hd").toggleClass('hi');
-        $$("#loc").toggleClass('fa-search, fa-remove');
+        $$("#searche").hide();
         $$("#pac-input").focus();
         o = false;
     }else
@@ -44,7 +42,7 @@ function inverte () {
         $$("#hc").css('width',swidth);
         $$("#hd").toggleClass('hi');
         $$("#hc").toggleClass('hi');
-        $$("#loc").toggleClass('fa-search, fa-remove');
+        $$("#searche").show();        
         o = true;
     }
  
