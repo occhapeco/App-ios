@@ -4,6 +4,88 @@ var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
 
+var myApp = new Framework7({
+    pushState: true,
+    animatePages: true,
+    swipeBackPage: true,
+    modalTitle: "Descartes Lab",
+    modalButtonCancel: "Cancelar",
+    init: false,
+    modalPreloaderTitle: "Carregando...",
+    preloadPreviousPage : false,
+    uniqueHistory : true
+});
+var $$ = Dom7;
+
+// Add view
+var mainView = myApp.addView('.view-main', {
+    dynamicNavbar: true
+});
+
+var o = true;
+
+function inverte () {
+    var swidth = $$("#ba").width() ; 
+    swidth+='px !important';
+    $$("#hc").css('width',swidth);
+
+    if (o) 
+    {
+        $$("#refresh").hide();
+        $$("#popover-btn").hide();
+        $$("#hc").css('width',swidth );
+        $$("#hc").toggleClass('hi');
+        $$("#hd").toggleClass('hi');
+        $$("#searche").hide();
+        $$("#pac-input").focus();
+        o = false;
+    }else
+    {
+        $$("#refresh").show();
+        $$("#popover-btn").show();
+        $$("#hc").css('width',swidth);
+        $$("#hd").toggleClass('hi');
+        $$("#hc").toggleClass('hi');
+        $$("#searche").show();        
+        o = true;
+    }
+ 
+}
+
+function cancela_rota()
+{
+    $$("#hb").addClass('hi');
+    $$("#refresh").show();
+    $$("#searche").show();
+    $$("#hd").removeClass('hi');
+    ds.setMap(null);
+    setMapOnAll(true);
+    document.getElementById("rightpanel").style.height = '0';
+    document.getElementById("map").style.height = '100%';
+
+    markerCluster.addMarkers(markers);
+    markerCluster.resetViewport();
+    markerCluster.repaint();
+}
+
+function realiza_rota()
+{
+    if (!o) {
+        inverte();
+    }
+    $$("#searche").hide();
+    $$("#hb").removeClass('hi');
+    $$("#refresh").hide();
+    $$("#hd").addClass('hi');
+    $$("#hc").addClass('hi');
+    infowindow.close();
+
+    markerCluster.clearMarkers();
+    markerCluster.resetViewport();
+    markerCluster.repaint();
+}
+
+
 inicializar();
 
 $$(document).on('pageInit', function (e) {
@@ -116,16 +198,20 @@ function aplicar_filtro()
 
 function inicializar()
 {
-  if(localStorage.getItem("login_id") == null)
-  {
-    remover_panel();
-    mainView.router.loadPage('login.html');
-  }
-  else
-  {
-    criar_menu();
-    mainView.router.loadPage('mapa.html');
-  }
+  myApp.onPageInit('index', function (page) {
+    alert("BATATATATATATA");
+     if(localStorage.getItem("login_id") == null)
+      {
+        remover_panel();
+        mainView.router.loadPage('login.html');
+      }
+      else
+      {
+        criar_menu();
+        mainView.router.loadPage('mapa.html');
+      }
+  }).trigger();
+  myApp.init();
   //localStorage.removeItem("tutorial");
 }
 
