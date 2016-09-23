@@ -1,0 +1,103 @@
+<div data-page="agendar" class="page navbar-fixed">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>
+        <div id="hd">
+          Agendar coleta
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="list-block">
+      <form onsubmit="criar_agendamento();"> 
+        <ul id="agendar_ul">
+
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="fa fa-calendar"></i></div>
+              <div class="item-inner">
+                <div class="item-title label">Data da coleta</div>
+                <div class="item-input">
+                  <input type="text" placeholder="Data da coleta" readonly id="data_agendamento">
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="fa fa-clock-o"></i></div>
+              <div class="item-inner">
+                <div class="item-title label">Horário da coleta</div>
+                <div class="item-input">
+                  <input type="text" placeholder="Horário da coleta" readonly id="horario_agendamento">
+                </div>
+              </div>
+            </div>
+          </li>
+          
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="fa fa-clock-o"></i></div>
+              <div class="item-inner">
+                <div class="item-title label">Quantidade média (em Kg)</div>
+                <div class="item-input">
+                  <input type="number" placeholder="Quantidade média (em Kg)" id="quantidade_agendamento">
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="fa fa-university"></i></div>
+              <div class="item-inner">
+                <a href="#" class="item-link smart-select">
+                  <select id="endereco_id_agendamento">
+                    <option selected>Nada selecionado</option>
+                  </select>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Endereço</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="fa fa-university"></i></div>
+              <div class="item-inner">
+                <a href="#" class="item-link smart-select">
+                  <select id="tipos_lixo_agendamento" multiple>
+                    <option selected>Nada selecionado</option>
+                  </select>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Tipos de lixo</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+        <p class="buttons-row">
+          <div class="row" style="width:90%;margin-left:5%;">
+            <div class="col-50">
+              <a href="#" style="width:auto" class="button button-raised button-fill color-red back">Cancelar</a>
+            </div>
+            <div class="col-50">
+              <a style="width:100%" onclick="criar_agendamento();" class="button button-raised button-fill color-blue">Agendar</a>
+            </div>
+          </div>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

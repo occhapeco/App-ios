@@ -1,0 +1,70 @@
+<div data-page="perfil" class="page">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>
+        <div id="hd">
+          DescartesLab
+        </div>
+      </div>
+      <div class="right">
+        <a onclick="carregar_perfil();" class="link icon-only" style="color:#FFFFFF !important; width:56px !important;">
+          <i class="fa fa-refresh"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+
+  <div class="list-block" style="margin:0 !important;">
+  <img src="img/logod.png" style="width:60%; height:60%;margin-left:20%; margin-top:60px;">
+  <ul>
+
+    <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-user"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">Nome</div>
+          <div class="item-input">
+            <input type="text" id="usuario_nome" name="usuario_nome" placeholder="Seu nome">
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-envelope"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">E-mail</div>
+          <div class="item-input">
+            <input type="email" id="usuario_email" name="usuario_email" disabled placeholder="E-mail">
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-phone"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">Telefone</div>
+          <div class="item-input">
+            <input type="text" id="usuario_telefone" name="usuario_telefone" placeholder="Telefone">
+          </div>
+        </div>
+      </div>
+    </li>
+
+  </ul> 
+  </div> 
+
+  <p class="buttons-row">
+    <a onclick="alterar_perfil();" style="width:90%;margin-left:5%;" class="button button-raised button-fill ">Salvar</a>
+  </p>
+  <p class="buttons-row">
+    <a href="altsenha.html" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-orange">Alterar senha</a>
+  </p>
+
+  </div>
+</div>

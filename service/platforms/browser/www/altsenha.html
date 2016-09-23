@@ -1,0 +1,67 @@
+<div data-page="altsenha" class="page navbar-fixed">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>
+        <div id="hd">
+          DescartesLab
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+
+  <div class="list-block" style="margin:0 !important;">
+  <form onsubmit="alterar_senha();"> 
+  <ul>
+
+  <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-lock"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">Senha atual</div>
+          <div class="item-input">
+            <input type="password" id="usuario_senha_antiga" placeholder="Senha atual">
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-lock"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">Nova senha</div>
+          <div class="item-input">
+            <input type="password" id="usuario_senha1" placeholder="Nova senha">
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="item-content">
+        <div class="item-media"><i class="fa fa-lock"></i></div>
+        <div class="item-inner">
+          <div class="item-title label">Digite novamente</div>
+          <div class="item-input">
+            <input type="password" id="usuario_senha2" placeholder="Repita a senha">
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+  <p class="buttons-row">
+    <div class="row" style="width:90%;margin-left:5%;">
+      <div class="col-50">
+        <a href="#" style="width:auto" class="button button-raised button-fill color-red back">Cancelar</a>
+      </div>
+      <div class="col-50">
+        <button type="submit" style="width:100%" onclick="alterar_senha();" class="button button-raised button-fill color-green">Salvar</button>
+      </div>
+    </div>
+  </p>
+  </form>
+
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div data-page="agendamentos" class="page with-subnavbar">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link icon-only open-panel" id="bc"><i class="icon icon-bars"></i></a>
+        <div id="hd">
+          Agendamentos
+        </div>
+      </div>
+      <div class="right">
+        <a onclick="carregar_agendamentos();" class="link icon-only" style="color:#FFFFFF !important; width:56px !important;">
+          <i class="fa fa-refresh"></i>
+        </a>
+      </div>
+    </div>
+    <div class="subnavbar">
+      <div class="buttons-row">
+        <a href="#tab1" class="button active tab-link"><i class="fa fa-hourglass-1"></i></a>
+        <a href="#tab2" class="button tab-link"><i class="fa fa-hourglass-2"></i></a>
+        <a href="#tab3" class="button tab-link"><i class="fa fa-hourglass-3"></i></a>
+        <a href="#tab4" class="button tab-link"><i class="fa fa-calendar-check-o"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="tabs-swipeable-wrap" style="margin-top:75px;">
+      <!-- Tabs, tabs wrapper -->
+      <div class="tabs">
+        <!-- Tab 1, active by default -->
+        <div id="tab1" class="page-content tab active">
+          <div class="list-block accordion-list">
+            <i class="fa fa-hourglass-1" style="margin:20px;"></i>Em espera
+            <ul id="espera">
+            </ul>
+          </div>
+        </div>
+        <!-- Tab 2 -->
+        <div id="tab2" class="page-content tab">
+          <div class="list-block accordion-list">
+            <i class="fa fa-hourglass-2" style="margin:20px;"></i>Aceitos
+            <ul id="aceitos">
+            </ul>
+          </div>
+        </div>
+        <!-- Tab 3 -->
+        <div id="tab3" class="page-content tab">
+          <div class="list-block accordion-list">
+            <i class="fa fa-hourglass-3" style="margin:20px;"></i>Atrasados
+            <ul id="atrasados">
+            </ul>
+          </div>
+        </div>
+        <!-- Tab 4 -->
+        <div id="tab4" class="page-content tab">
+          <div class="list-block accordion-list">
+            <i class="fa fa-calendar-check-o" style="margin:20px;"></i>Realizados
+            <ul id="realizados">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
