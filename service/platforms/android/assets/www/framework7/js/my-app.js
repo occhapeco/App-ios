@@ -30,6 +30,7 @@ function inverte () {
     if (o) 
     {
         $$("#refresh").hide();
+        $$("#popover-btn").hide();
         $$("#hc").css('width',swidth );
         $$("#hc").toggleClass('hi');
         $$("#hd").toggleClass('hi');
@@ -39,6 +40,7 @@ function inverte () {
     }else
     {
         $$("#refresh").show();
+        $$("#popover-btn").show();
         $$("#hc").css('width',swidth);
         $$("#hd").toggleClass('hi');
         $$("#hc").toggleClass('hi');
