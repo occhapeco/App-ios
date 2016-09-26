@@ -92,11 +92,45 @@
     <!-- Views-->
     <div class="views">
       <!-- Your main view, should have "view-main" class-->
-      <div class="view view-main">
+      <div class="view view-main navbar-through" id="main_nav">
+      <div class="navbar" id="ba">
+        <div class="navbar-inner"  style="padding: 0 0 0 8px !important">
+          <div class="left">
+            <a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>
+            <div id="hd">
+              DescartesLab
+            </div>
+          </div>
+          <div id="hc" class="hi">
+            <form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">
+              <div class="searchbar-input">
+                <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">
+              </div>
+              <a href="#" class="searchbar-cancel" onclick="inverte();">Cancel</a>
+            </form>
+          </div>
+          <div class="center">
+            <div id="hb" class="hi" onclick="cancela_rota();">
+              Apagar Rota<i class="fa fa-remove"></i>
+            </div>
+          </div>
+          <div class="right" style="margin-left: 0 !important">
+            <a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">
+              <i class="fa fa-filter"></i>
+            </a>
+            <a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">
+              <i class="fa fa-refresh"></i>
+            </a>
+            <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;">
+              <i class="fa fa-search" id="loc"></i>
+            </a>
+          </div>
+        </div>
+      </div>
         <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
-        <div class="pages navbar-through">
+        <div class="pages">
           <!-- Page, data-page contains page name-->
-          <div data-page="index" class="page navbar-fixed" id="index_page">
+          <div data-page="index" class="page" id="index_page">
             <!-- Scrollable page content-->
             
           </div>
