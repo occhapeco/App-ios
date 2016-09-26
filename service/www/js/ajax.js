@@ -109,58 +109,74 @@ $$(document).on('pageInit', function (e) {
 
     if(page.name === 'addendereco')
     {
-      if (page.query.id) {
-        carregar_edicao_endereco(page.query.id,page.query.nome);
-      }
+      myApp.closePanel();
+      setTimeout(function () {
+        if (page.query.id) {
+          carregar_edicao_endereco(page.query.id,page.query.nome);
+        }
+      },300);
     }
 
     if(page.name == 'perfil')
     {
-      carregar_perfil();
+      myApp.closePanel();
+      setTimeout(function () {
+        carregar_perfil();
+      },300);      
     }
 
     if(page.name == 'enderecos')
     {
-      carregar_enderecos();
+      myApp.closePanel();
+      setTimeout(function () {
+        carregar_enderecos();
+      },300); 
     }
 
     if(page.name == 'agendamentos')
     {
-      carregar_agendamentos();
+      myApp.closePanel();
+      setTimeout(function () {
+        carregar_agendamentos();
+      },30); 
     }
+
     if(page.name == 'agendar')
     {
-      criar_menu();
-      mostrar_enderecos();
-      criar_tipos_lixo();
-      var calendarDefault = myApp.calendar({
-        input: '#data_agendamento',
-      });  
+      myApp.closePanel();
+      setTimeout(function () {
+        criar_menu();
+        mostrar_enderecos();
+        criar_tipos_lixo();
+        var calendarDefault = myApp.calendar({
+          input: '#data_agendamento',
+        });  
 
-      var pickerDevice = myApp.picker({
-        input: '#horario_agendamento',
-        cols: [
-            {
-              values: (function () {
-                var arr = [];
-                for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
-                return arr;
-              })(),
-            },
-            // Divider
-            {
-              values: ":",
-            },
-            // Minutes
-            {
-              values: (function () {
-                var arr = [];
-                for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
-                return arr;
-              })(),
-            }
-          ]
-      });
+        var pickerDevice = myApp.picker({
+          input: '#horario_agendamento',
+          cols: [
+              {
+                values: (function () {
+                  var arr = [];
+                  for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
+                  return arr;
+                })(),
+              },
+              // Divider
+              {
+                values: ":",
+              },
+              // Minutes
+              {
+                values: (function () {
+                  var arr = [];
+                  for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                  return arr;
+                })(),
+              }
+            ]
+        });
+      },300);
     }
     
 });
