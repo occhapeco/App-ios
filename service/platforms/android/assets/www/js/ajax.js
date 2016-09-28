@@ -28,8 +28,8 @@ var mainView = myApp.addView('.view-main', {
 var o = true;
 
 function inverte () {
-    var swidth = $$("#ba").width() ; 
-    swidth+='px !important';
+    var swidth = $$("#ba").width(); 
+    swidth +='px !important';
     $$("#hc").css('width',swidth);
 
     if (o) 
@@ -107,6 +107,14 @@ $$(document).on('pageInit', function (e) {
         mainView.router.loadPage('mapa.html');
       else
         $$("#ba").hide();
+    }
+
+    if(page.name === 'notificacoes')
+    {
+      myApp.closePanel();
+      setTimeout(function () {
+        carregar_notificacoes()
+      },300);
     }
 
     if(page.name === 'addendereco')
@@ -214,7 +222,6 @@ function inicializar()
       {
         remover_menu();
         mostrar_tela_login();
-        criar_menu();
       }
       else
       {
@@ -434,6 +441,36 @@ function carregar_enderecos()
   },500);
 }
 
+function carregar_notificacoes()
+{
+  myApp.showPreloader();
+  setTimeout(function () {
+    var json_dados = ajax_method(false,'notificacao.select_by_usuario',localStorage.getItem("login_id"));
+    var retorno = JSON.parse(json_dados);
+    console.log(json_dados);
+    html = '';
+    for (i = 0; i < retorno.length; i++)
+    {
+      if (retorno[i].destino == 0) {
+        json_dados = ajax_method(false,'empresa.select_by_id',retorno[i].empresa_id);
+        var empresa = JSON.parse(json_dados);
+        html += '<li class="swipeout">'+
+                    '<div class="swipeout-content item-content">'+
+                      '<div class="item-media"></div>'+
+                      '<div class="item-inner">'+empresa[0].nome_fantasia;
+                      if (retorno[i].tipo == 1)
+                        html += ' aceitou o agendamento.</div>';
+                      if (retorno[i].tipo == 2)
+                        html += ' recusou o agendamento.</div>';
+                    html +='</div>';
+        html += '<div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Excluir</a></div></li>';
+      }
+    }
+    document.getElementById('ulnotificacoes').innerHTML = html;
+    myApp.hidePreloader();
+  },500);
+}
+
 function carregar_perfil()
 {
   myApp.showPreloader();
@@ -513,6 +550,12 @@ function criar_menu()
                             '<div class="item-title">Enderecos</div>'+
                           '</div>'+
                         '</div></a></li>'+
+                    '<li><a href="notificacoes.html" class="item-link">'+
+                        '<div class="item-content"> '+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Notificações</div>'+
+                          '</div>'+
+                        '</div></a></li>'+
                     '<li><a href="#" class="item-link" onclick="logout();">'+
                         '<div class="item-content"> '+
                           '<div class="item-inner">'+
@@ -545,31 +588,27 @@ function mostrar_tela_login()
                                                               '<li class="item-content">'+
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Email</div>'+
-                                                                  '<div class="item-input">'+
-                                                                    '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@batata.com" required>'+
-                                                                  '</div>'+
+                                                                    '<div class="item-input">'+
+                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@batata.com" required>'+
+                                                                    '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
                                                               '<li class="item-content">'+
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Senha</div>'+
-                                                                  '<div class="item-input">'+
-                                                                    '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
-                                                                  '</div>'+
+                                                                    '<div class="item-input">'+
+                                                                      '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
+                                                                    '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
                                                             '</ul>'+
                                                           '</div>'+
-                                                          '<div class="list-block">'+
-                                                            '<ul>'+
-                                                              '<li>'+
-                                                                '<center><button onclick="login();" class="item-link button" style="width: 90%;">Entrar</button></center>'+
-                                                              '</li>'+
-                                                            '</ul>'+
-                                                            '<div class="list-block-label">'+
+                                                          '<div class="list-block-label" style="padding-left:15px;padding-right:15px;">'+
+                                                              '<p><a onclick="login();" class="button">Entrar</a></p>'+
                                                               '<p><a href="cadastro.html" class="button">Não possui cadastro? Clique aqui!</a></p>'+
-                                                            '</div>'+
                                                           '</div>'+
+                                                        '</div>'+
+                                                      '</div>'+
                                                       '</div>'+
                                                     '</div>';
 }
@@ -592,6 +631,7 @@ function login()
     if (id != 0)
     {
       localStorage.setItem("login_id",id);
+      $$("#ba").show();
       mainView.router.refreshPage();
     }
     else
@@ -887,6 +927,18 @@ function excluir_endereco(id)
       }
       else{
         myApp.alert("Não foi possível excluir seu endereço, por favor, reveja sua conexão.");
+      }
+    },500);
+}
+
+function excluir_notificacao(id)
+{
+    setTimeout(function () {
+      var json_dados = ajax_method(false,'notificacao.delete',id);
+      if (json_dados) {
+      }
+      else{
+        myApp.alert("Não foi possível excluir sua notificação, por favor, reveja sua conexão.");
       }
     },500);
 }
