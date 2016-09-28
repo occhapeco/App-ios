@@ -105,6 +105,8 @@ $$(document).on('pageInit', function (e) {
       remover_menu();
       if(localStorage.getItem("login_id") != null)
         mainView.router.loadPage('mapa.html');
+      else
+        $$("#ba").hide();
     }
 
     if(page.name === 'addendereco')
@@ -534,6 +536,7 @@ function mostrar_tela_mapa()
 
 function mostrar_tela_login()
 {
+  $$("#ba").hide();
   document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
                                                       '<div class="page-content login-screen-content">'+
                                                         '<div class="login-screen-title">Descartes Lab</div>'+
@@ -601,7 +604,9 @@ function login()
 
 function logout()
 {
+  myApp.closePanel();
   remover_menu();
+  $$("#ba").hide();
   localStorage.removeItem("login_id");  
   mainView.router.refreshPage();
 }
