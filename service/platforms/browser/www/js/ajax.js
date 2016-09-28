@@ -17,6 +17,7 @@ var myApp = new Framework7({
     init: false,
     preloadPreviousPage : false,
     uniqueHistory : true
+
 });
 var $$ = Dom7;
 
@@ -186,7 +187,7 @@ $$(document).on('pageInit', function (e) {
               }
             ]
         });
-      },300);
+      },400);
     }
     
 });
@@ -546,7 +547,7 @@ function criar_menu()
                     '<li><a href="enderecos.html" class="item-link">'+
                         '<div class="item-content"> '+
                           '<div class="item-inner">'+
-                            '<div class="item-title">Enderecos</div>'+
+                            '<div class="item-title">Endereços</div>'+
                           '</div>'+
                         '</div></a></li>'+
                     '<li><a href="notificacoes.html" class="item-link">'+
@@ -715,15 +716,10 @@ function mostrar_enderecos()
 {
   var json_dados = ajax_method(false,'usuario_has_endereco.select','usuario_id = '+localStorage.getItem("login_id"));
   var usuario_has_endereco = JSON.parse(json_dados);
-  var html = "";
+  var html = "<option value='0' selected>Nada selecionado</option>";
 
   for(var i=0;i<usuario_has_endereco.length;i++)
-  {
-    html += '<option value='+usuario_has_endereco[i].endereco_id;
-    if(i==0)
-      html += ' selected';
-    html += '>'+usuario_has_endereco[i].nome+'</option>';
-  }
+    html += '<option value='+usuario_has_endereco[i].endereco_id+'>'+usuario_has_endereco[i].nome+'</option>';
   document.getElementById("endereco_id_agendamento").innerHTML = html;
 }
 
