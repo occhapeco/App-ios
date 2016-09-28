@@ -447,7 +447,6 @@ function carregar_notificacoes()
   setTimeout(function () {
     var json_dados = ajax_method(false,'notificacao.select_by_usuario',localStorage.getItem("login_id"));
     var retorno = JSON.parse(json_dados);
-    console.log(json_dados);
     html = '';
     for (i = 0; i < retorno.length; i++)
     {
