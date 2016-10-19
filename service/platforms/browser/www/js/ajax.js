@@ -8,7 +8,7 @@ var myApp = new Framework7({
     pushState: true,
     animatePages: true,
     swipeBackPage: true,
-    modalTitle: "Descartes Lab",
+    modalTitle: "DescartesLab",
     modalButtonCancel: "Cancelar",
     modalPreloaderTitle: "Carregando...",
     smartSelectBackText: 'Voltar',
@@ -17,7 +17,6 @@ var myApp = new Framework7({
     init: false,
     preloadPreviousPage : false,
     uniqueHistory : true
-
 });
 var $$ = Dom7;
 
@@ -127,7 +126,7 @@ $$(document).on('pageInit', function (e) {
         }
       },300);
     }
-
+ 
     if(page.name == 'perfil')
     {
       myApp.closePanel();
@@ -339,11 +338,11 @@ function carregar_agendamentos()
       var usuario_has_endereco = JSON.parse(json_dados);
       var data = new Date(agendamento[i].data_agendamento);
       var hoje = new Date;
-      var html = '<li class="accordion-item swipeout" id="li_id_'+agendamento[i].id+'" style="-webkit-transform: translate3d(0,0,0); transform: translate3d(0, 0, 0); "><a href="#" class="item-content swipeout-content item-link">'+
+      var html = '<li class="accordion-item swipeout" id="li_id_'+agendamento[i].id+'"><a href="#" class="item-content swipeout-content item-link">'+
                 '<div class="item-inner" >'+
                   '<div class="item-title"><i class="fa fa-arrow-right"></i>   '+empresa[0].nome_fantasia+' - '+usuario_has_endereco[0].nome+'</div>'+
                     '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;-webkit-transform: translate3d(0,0,0); transform: translate3d(0, 0, 0); ""><div class="content-block">'+
+                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
                           '<p>Data agendada: '+agendamento[i].data_agendamento+'</p>'+
                           '<p>Horário: '+agendamento[i].horario+'</p>';
       json_dados = ajax_method(false,'agendamento_has_tipo_lixo.select_by_agendamento',agendamento[i].id);
@@ -412,7 +411,7 @@ function carregar_enderecos()
     {
       json_dados = ajax_method(false,'endereco.select_by_id',retorno[i].endereco_id);
       var endereco = JSON.parse(json_dados);
-      html += '<li class="accordion-item swipeout" style=""><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
+      html += '<li class="accordion-item swipeout"><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
                 '<div class="item-inner" >'+
                   '<div class="item-title">';
       if (localStorage.getItem("lat_padrao")==endereco[0].latitude && localStorage.getItem("long_padrao")==endereco[0].longitude)
@@ -424,7 +423,7 @@ function carregar_enderecos()
 
       html+='</i>   '+retorno[i].nome+'</div>'+
                     '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED; -webkit-transform: none !important; transform: none !important;"><div class="content-block">'+
+                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
                           '<p>Rua: '+endereco[0].rua+'</p>'+
                           '<p>Número: '+endereco[0].num+'. Complemento: '+endereco[0].complemento+'</p>'+
                           '<p>CEP:'+endereco[0].cep+'</p>'+
@@ -632,7 +631,9 @@ function login()
     {
       localStorage.setItem("login_id",id);
       $$("#ba").show();
-      mainView.router.refreshPage();
+      criar_menu();
+      mostrar_tela_mapa();
+      mapa_refresh();
     }
     else
     {
@@ -645,71 +646,109 @@ function login()
 function logout()
 {
   myApp.closePanel();
-  remover_menu();
   $$("#ba").hide();
   localStorage.removeItem("login_id");  
-  mainView.router.refreshPage();
+  mainView.router.back();
+  remover_menu();
+  mostrar_tela_login();
 }
 
 function select_pontos()
 {
-  var json_dados = ajax_method(false,'tipo_lixo.select','');
-  var tipo_lixo = JSON.parse(json_dados);
-  var num = 0;
-  var condicao = '';
-  for(var j=0;j<tipo_lixo.length;j++)
-  {
-    if(document.getElementById("tipo_lixo_"+tipo_lixo[j].id).checked == true)
+  if (localStorage.getItem("long_padrao") != null) {
+    var json_dados = ajax_method(false,'tipo_lixo.select','');    
+    var tipo_lixo = JSON.parse(json_dados);
+    var num = 0;
+    var condicao = '';
+    for(var j=0;j<tipo_lixo.length;j++)
     {
-      if(num != 0)
-        condicao += " OR";
-      condicao += " tipo_lixo_id = "+tipo_lixo[j].id;
-      num++;
+      if(document.getElementById("tipo_lixo_"+tipo_lixo[j].id).checked == true)
+      {
+        if(num != 0)
+          condicao += " OR";
+        condicao += " tipo_lixo_id = "+tipo_lixo[j].id;
+        num++;
+      }
     }
-  }
 
-  json_dados = ajax_method(false,'ponto.select','');
-  var ponto = JSON.parse(json_dados);
 
-  setMapOnAll(null);
-  markers = [];
+    json_dados = ajax_method(false,'ponto.select_by_coordenadas',localStorage.getItem("lat_padrao"),localStorage.getItem("long_padrao"));
+    var ponto = JSON.parse(json_dados);
 
-  for(var i=0;i<ponto.length;i++)
-  {
-    var condi = "ponto_id = "+ponto[i].id+" AND ("+condicao+")";
-    if(num == 0)
-      condi = '';
-    json_dados = ajax_method(false,'tipo_lixo_has_ponto.select',condi);
-    tipo_lixo_has_ponto = JSON.parse(json_dados);
-    if(tipo_lixo_has_ponto.length > 0)
+    setMapOnAll(null);
+    markers = [];
+
+    for(var i=0;i<ponto.length;i++)
     {
-      json_dados = ajax_method(false,'endereco.select_by_id',ponto[i].endereco_id);
-      var endereco = JSON.parse(json_dados);
-      var features = [];
-      features["type"] = "mark1";
-      features["position"] = new google.maps.LatLng(endereco[0].latitude,endereco[0].longitude);
-      features["info"] = '<div class="list-block cards-list">'+
-                           '<ul>'+
-                             '<li class="card">'+
-                               '<div class="card-header">Nome do ponto</div>'+
-                               '<div class="card-content">'+
-                                 '<div class="card-content-inner">Descrição do ponto</div>'+
-                               '</div>'+
-                               '<div class="card-footer">'+
-                               '<div class="content-block"><p class="buttons-row">'+
-                                 '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
-                               '</p><p class="buttons-row">'+
-                                 '<a href="#" style="width:100%" class="button button-raised button-fill color-blue" onclick ="calculateAndDisplayRoute'+
-                                 '('+endereco[0].latitude+','+endereco[0].longitude+')">Rotas até aqui</a>'+
-                               '</p></div></div>'+
-                             '</li>'+
-                           '</ul>'+
-                         '</div>';
-      features["draggable"] = false;
-      addMarker(features);
+      var condi = " ponto_id = "+ponto[i].id+" AND ("+condicao+")";
+      if(num == 0)
+        condi = '';
+      json_dados = ajax_method(false,'tipo_lixo_has_ponto.select',condi);
+      tipo_lixo_has_ponto = JSON.parse(json_dados);
+      
+      if(tipo_lixo_has_ponto.length > 0)
+      {
+        var tipos_lixo = '';
+        for(j=0;j<tipo_lixo.length;j++)
+          for(var h=0;h<tipo_lixo_has_ponto.length;h++)
+            if(tipo_lixo[j].id == tipo_lixo_has_ponto[h].tipo_lixo_id)
+              tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome+'</div></li>';
+        json_dados = ajax_method(false,'endereco.select_by_id',ponto[i].endereco_id);
+        document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
+                                                          '<div class="navbar">'+
+                                                            '<div class="navbar-inner">'+
+                                                              '<div class="left">'+
+                                                                '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                '<div id="hd">'+
+                                                                  'Tipos de lixo do ponto'+
+                                                                '</div>'+
+                                                              '</div>'+
+                                                            '</div>'+
+                                                          '</div>'+
+                                                        '<div class="content-block">'+
+                                                          '<div class="list-block">'+
+                                                            '<ul>'+
+                                                              tipos_lixo+
+                                                            '</ul>'+
+                                                          '</div>'+
+                                                        '</div>'+
+                                                      '</div>';
+        var endereco = JSON.parse(json_dados);
+        var features = [];
+        features["type"] = "mark1";
+        features["position"] = new google.maps.LatLng(endereco[0].latitude,endereco[0].longitude);
+        features["info"] = '<div class="list-block">'+
+                             '<ul>'+
+                                '<li>'+
+                                  '<a href="#" class="item-link open-popup" data-popup=".popup-ponto_'+ponto[i].id+'">'+
+                                    '<div class="item-content">' +
+                                      '<div class="item-inner">'+
+                                        '<div class="item-title">Ver tipos de lixo</div>'+
+                                      '</div>'+
+                                   '</div>'+
+                                   '</a>'+
+                                 '</li>'+
+                                '<li><div class="item-content">'+
+                                '<div class="item-title">Funcionamento: '+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div>'+
+                               '</div></li>'+
+                             '</ul>'+
+                             '<p class="buttons-row">'+
+                               '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
+                             '</p>'+
+                             '<p class="buttons-row">'+
+                               '<a href="#" style="width:100%" class="button button-raised button-fill color-blue" onclick ="calculateAndDisplayRoute'+
+                               '('+endereco[0].latitude+','+endereco[0].longitude+')">Criar rota</a>'+
+                             '</p>'
+                           '</div>';
+        features["draggable"] = false;
+        addMarker(features);
+      }
     }
+    markerCluster = new MarkerClusterer(map, markers, options); 
   }
-  markerCluster = new MarkerClusterer(map, markers, options); 
+  else{
+    myApp.alert("Não pudemos carregar os pontos próximos a você pois você ainda não adicionou ou definiu um endereço como principal. Por favor faça-o.")
+  }
 }
 
 function mostrar_enderecos()
@@ -737,14 +776,7 @@ function criar_tipos_lixo()
 function criar_popover()
 {
   var component = document.getElementById("popover-list");
-  var html = '<ul>'+
-                '<li>'+
-                    '<div class="item-content"> '+
-                      '<div class="item-inner">'+
-                        '<div class="item-title" style="font-size:18px;">Filtros</div>'+
-                      '</div>'
-                    '</div>'+
-                  '</li>';
+  var html = '<ul>';
 
   var json_dados = ajax_method(false,'tipo_lixo.select','');
   var tipo_lixo = JSON.parse(json_dados);
@@ -761,12 +793,7 @@ function criar_popover()
                 '</div>'+
               '</label>'+
             '</li>';
-  html +=   '<li>'+
-              '<label class="label-checkbox item-content">'+
-                '<a onclick="aplicar_filtro();" style="width:100%;margin-right:15px;" class="button button-raised button-fill color-bluegray">Aplicar filtros</a>'+
-              '</label>'+
-            '</li>'+
-          '</ul>';
+  html +=   '</ul>';
   component.innerHTML = html;
 }
 
@@ -847,20 +874,25 @@ function cadastro()
 {
   myApp.showPreloader();
   setTimeout(function () {
-    var adduser = ajax_method(false,'usuario.insert',document.getElementById("cad_nome").value,document.getElementById("cad_email").value,document.getElementById("cad_senha").value,document.getElementById("cad_cpf").value,document.getElementById("cad_telefone").value);
-    if(adduser != 0)
+    if(document.getElementById("cad_senha").value == document.getElementById("cad_senha2").value)
     {
-      myApp.hidePreloader();
-      localStorage.setItem("login_id",adduser);
-      mainView.router.refreshPage();
-    }
-    else
-    {
-      myApp.hidePreloader();
-      myApp.alert("Seu perfil não pode ser criado, reveja suas informações ou sua conexão por favor.");
+      var adduser = ajax_method(false,'usuario.insert',document.getElementById("cad_nome").value,document.getElementById("cad_email").value,document.getElementById("cad_senha").value,document.getElementById("cad_cpf").value,document.getElementById("cad_telefone").value);
+      if(adduser != 0)
+      {
+        myApp.hidePreloader();
+        mainView.router.back();
+        mostrar_tela_mapa();
+        mapa_refresh();
+        criar_menu();
+        localStorage.setItem("login_id",adduser);
+      }
+      else
+      {
+        myApp.hidePreloader();
+        myApp.alert("Seu perfil não pode ser criado, reveja suas informações ou sua conexão por favor.");
+      }
     }
   },500);
-
 }
 
 function seleciona (lat,long)

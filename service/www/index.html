@@ -137,15 +137,41 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> 
 
     <!--FILTROS-->
     <div class="popover demo-popover" style="z-index:1333330 !important;" id="filter-popover">
       <div class="popover-inner">
-        <div id="popover-list" class="list-block">
+        <div class="list-block">
+          <ul>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Filtros</div>
+                </div>
+             </div>
+            </li>
+          </ul>
+        </div>
+        <div id="popover-list" class="list-block" style="max-height: 300px;overflow: auto;">
           <!-- Conteúdo do popover (óbvio) -->
         </div>
+        <div class="list-block">
+          <ul>
+            <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <a onclick="aplicar_filtro();" style="width:100%;" class="button button-raised button-fill color-bluegray">Aplicar</a>
+                  </div>
+               </div>
+            </li>
+          </ul>
+        </div>
       </div>
+    </div>
+
+    <div id="popups">
+      <!-- Popups utilizados -->
     </div>
 
     <script type="text/javascript" src="cordova.js"></script>
