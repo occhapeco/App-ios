@@ -339,11 +339,11 @@ function carregar_agendamentos()
       var usuario_has_endereco = JSON.parse(json_dados);
       var data = new Date(agendamento[i].data_agendamento);
       var hoje = new Date;
-      var html = '<li class="accordion-item swipeout" id="li_id_'+agendamento[i].id+'"><a href="#" class="item-content swipeout-content item-link">'+
+      var html = '<li class="accordion-item swipeout" id="li_id_'+agendamento[i].id+'" style="-webkit-transform: translate3d(0,0,0); transform: translate3d(0, 0, 0); "><a href="#" class="item-content swipeout-content item-link">'+
                 '<div class="item-inner" >'+
                   '<div class="item-title"><i class="fa fa-arrow-right"></i>   '+empresa[0].nome_fantasia+' - '+usuario_has_endereco[0].nome+'</div>'+
                     '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
+                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;-webkit-transform: translate3d(0,0,0); transform: translate3d(0, 0, 0); ""><div class="content-block">'+
                           '<p>Data agendada: '+agendamento[i].data_agendamento+'</p>'+
                           '<p>Horário: '+agendamento[i].horario+'</p>';
       json_dados = ajax_method(false,'agendamento_has_tipo_lixo.select_by_agendamento',agendamento[i].id);
@@ -412,7 +412,7 @@ function carregar_enderecos()
     {
       json_dados = ajax_method(false,'endereco.select_by_id',retorno[i].endereco_id);
       var endereco = JSON.parse(json_dados);
-      html += '<li class="accordion-item swipeout"><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
+      html += '<li class="accordion-item swipeout" style=""><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
                 '<div class="item-inner" >'+
                   '<div class="item-title">';
       if (localStorage.getItem("lat_padrao")==endereco[0].latitude && localStorage.getItem("long_padrao")==endereco[0].longitude)
@@ -424,7 +424,7 @@ function carregar_enderecos()
 
       html+='</i>   '+retorno[i].nome+'</div>'+
                     '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
+                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED; -webkit-transform: none !important; transform: none !important;"><div class="content-block">'+
                           '<p>Rua: '+endereco[0].rua+'</p>'+
                           '<p>Número: '+endereco[0].num+'. Complemento: '+endereco[0].complemento+'</p>'+
                           '<p>CEP:'+endereco[0].cep+'</p>'+
