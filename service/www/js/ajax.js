@@ -826,9 +826,7 @@ function select_pontos()
                                    '</div>'+
                                    '</a>'+
                                  '</li>'+
-                                '<li><div class="item-content">'+
-                                '<div class="item-title">Funcionamento: '+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div>'+
-                               '</div></li>'+
+                                '<li><div class="item-content"><div class="item-title">Funcionamento</div><div class="item-after">'+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div></div></li>'+
                              '</ul>'+
                              '<p class="buttons-row">'+
                                '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
