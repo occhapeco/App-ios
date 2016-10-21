@@ -489,9 +489,9 @@ function carregar_enderecos()
                       '<div class="item-inner">'+
                         '<div class="item-title">';
       if (localStorage.getItem("lat_padrao")==endereco[0].latitude && localStorage.getItem("long_padrao")==endereco[0].longitude)
-        html+='<i class="fa fa-star"> ';
+        html+='<i class="fa fa-star"> </i>';
       else
-        html+='<i class="fa fa-university"></i>';
+        html+='<i class="fa fa-university"> </i>';
 
                         html += usuario_has_endereco[i].nome+'</div>'+
                       '</div>'+
@@ -531,7 +531,7 @@ function carregar_enderecos()
                                                               '</div>';
     document.getElementById("ulenderecos").innerHTML += html;
     if (localStorage.getItem("lat_padrao")!=endereco[0].latitude && localStorage.getItem("long_padrao")!=endereco[0].longitude)
-      document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
+      document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+usuario_has_endereco[i].id+','+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
     }
     myApp.hidePreloader();
   },500);
@@ -993,12 +993,12 @@ function cadastro()
   },500);
 }
 
-function seleciona (id,lat,long)
+function seleciona(id,lat,long)
 {
-  myApp.closeModal('.popup-endereco-'+id);
   localStorage.setItem('lat_padrao',lat);
   localStorage.setItem('long_padrao',long);
   mainView.router.refreshPage();
+  myApp.closeModal('.popup-endereco-'+id);
 }
 
 function carregar_edicao_endereco(id,nome)
