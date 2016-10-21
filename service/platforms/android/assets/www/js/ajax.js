@@ -330,24 +330,56 @@ function carregar_agendamentos()
     document.getElementById('aceitos').innerHTML = "";
     document.getElementById('atrasados').innerHTML = "";
     document.getElementById('realizados').innerHTML = "";
+    document.getElementById('cancelados').innerHTML = "";
+    document.getElementById('popups-agendamentos').innerHTML = "";
     for(var i=0;i<agendamento.length;i++)
     {
+
       json_dados = ajax_method(false,'empresa.select_by_id',agendamento[i].empresa_id);
       var empresa = JSON.parse(json_dados);
       json_dados = ajax_method(false,'usuario_has_endereco.select',"endereco_id = "+agendamento[i].endereco_id+" AND usuario_id = "+localStorage.getItem("login_id"));
       var usuario_has_endereco = JSON.parse(json_dados);
+
       var data = new Date(agendamento[i].data_agendamento);
       var hoje = new Date;
-      var html = '<li class="accordion-item swipeout" id="li_id_'+agendamento[i].id+'"><a href="#" class="item-content swipeout-content item-link">'+
-                '<div class="item-inner" >'+
-                  '<div class="item-title"><i class="fa fa-arrow-right"></i>   '+empresa[0].nome_fantasia+' - '+usuario_has_endereco[0].nome+'</div>'+
-                    '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
-                          '<p>Data agendada: '+agendamento[i].data_agendamento+'</p>'+
-                          '<p>Horário: '+agendamento[i].horario+'</p>';
+      var html = '<li id="li-agendamento-'+agendamento[i].id+'">'+
+                  '<a href="#" class="item-link open-popup" data-popup=".popup-agendamento-'+agendamento[i].id+'">'+
+                    '<div class="item-content">' +
+                      '<div class="item-inner">'+
+                        '<div class="item-title">'+empresa[0].nome_fantasia+' - '+usuario_has_endereco[0].nome+'</div>'+
+                      '</div>'+
+                   '</div>'+
+                   '</a>'+
+                 '</li>';
+
+      var justificativa = '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+agendamento[i].justificativa+'</div></li>';
+
+      if(agendamento[i].justificativa == null)
+        justificativa = "";
+      var btn = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar agendamento</a></p>';
+      if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 0))
+        document.getElementById('espera').innerHTML += html;
+      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0) && (data < hoje))
+        document.getElementById('atrasados').innerHTML += html;
+      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0))
+        document.getElementById('aceitos').innerHTML += html;
+      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 1) && (data >= hoje))
+      {
+        document.getElementById('realizados').innerHTML += html;
+        btn = "";
+      }
+      else if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 1))
+      {
+        document.getElementById('cancelados').innerHTML += html;
+        btn = "";
+      }
+
       json_dados = ajax_method(false,'agendamento_has_tipo_lixo.select_by_agendamento',agendamento[i].id);
       var agendamento_has_tipo_lixo = JSON.parse(json_dados);
       var tipos_lixo = "";
+      if(agendamento_has_tipo_lixo.length == 0)
+        tipos_lixo = "Nenhum";
+
       for(var j=0;j<agendamento_has_tipo_lixo.length;j++)
       {
         json_dados = ajax_method(false,'tipo_lixo.select_by_id',agendamento_has_tipo_lixo[j].tipo_lixo_id);
@@ -356,26 +388,65 @@ function carregar_agendamentos()
           tipos_lixo += ', ';
         tipos_lixo += tipo_lixo[0].nome;
       }
+      var quantidade = "";
       if(agendamento_has_tipo_lixo.length > 0)
-        html += '<p>Quantidade média (em Kg): '+agendamento_has_tipo_lixo[0].quantidade+'</p>';
-      html += '<p>Tipos de lixo: '+tipos_lixo+'</p>';
-      btn = '<p><a onclick="cancelar_agendamento('+agendamento[i].id+')" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar Agendamento</a><p>';
-      if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 0))
-        document.getElementById('espera').innerHTML += html+btn+'</div></div></li>';
-      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0) && (data < hoje))
-        document.getElementById('atrasados').innerHTML += html+btn+'</div></div></li>';
-      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0))
-        document.getElementById('aceitos').innerHTML += html+btn+'</div></div></li>';
-      else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 1) && (data >= hoje))
-        document.getElementById('realizados').innerHTML += html+'</div></div></li>';
+      {
+        quantidade = '<li class="item-content"><div class="item-title">Quantidade média (Kg)</div><div class="item-after">'+agendamento_has_tipo_lixo[0].quantidade+'</div></li>';
+      }
+
+      document.getElementById("popups-agendamentos").innerHTML += '<div class="popup popup-agendamento-'+agendamento[i].id+'">'+
+                                                                  '<div class="navbar">'+
+                                                                    '<div class="navbar-inner">'+
+                                                                      '<div class="left">'+
+                                                                        '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                        '<div id="hd">'+
+                                                                          'Detalhes do agendamento'+
+                                                                        '</div>'+
+                                                                      '</div>'+
+                                                                    '</div>'+
+                                                                  '</div>'+
+                                                                '<div class="content-block">'+
+                                                                  '<div class="list-block">'+
+                                                                    '<ul id="ul-agendamento-'+agendamento[i].id+'">'+
+                                                                      '<li class="item-content"><div class="item-title">Tipos de lixo</div><div class="item-after">'+tipos_lixo+'</div></li>'+
+                                                                      quantidade+
+                                                                      '<li class="item-content"><div class="item-title">Empresa</div><div class="item-after">'+empresa[0].nome_fantasia+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Endereço</div><div class="item-after">'+usuario_has_endereco[0].nome+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Data agendada</div><div class="item-after">'+agendamento[i].data_agendamento+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Horário agendado</div><div class="item-after">'+agendamento[i].horario+'</div></li>'+
+                                                                      justificativa+
+                                                                    '</ul>'+
+                                                                    btn+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</div>';
+
+      
     }
     myApp.hidePreloader();
   },500);
 }
 
-function cancelar_agendamento(id)
+function cancelar_agendamento(id,empresa,endereco)
 {
-  var cancelador = ajax_method(false,'agendamento.cancelar',id);
+  myApp.prompt(`Qual a justificativa do cancelamento?`, function (value) {
+    myApp.closeModal('.popup-agendamento-'+id);
+    var json = ajax_method(false,'agendamento.cancelar',id,value);
+    var html = '<li id="li-agendamento-'+id+'">'+
+                  '<a href="#" class="item-link open-popup" data-popup=".popup-agendamento-'+id+'">'+
+                    '<div class="item-content">' +
+                      '<div class="item-inner">'+
+                        '<div class="item-title">'+empresa+' - '+endereco+'</div>'+
+                      '</div>'+
+                   '</div>'+
+                   '</a>'+
+                 '</li>';
+    document.getElementById('li-agendamento-'+id).remove();
+    document.getElementById('cancelados').innerHTML += html;
+    document.getElementById("ul-agendamento-"+id).innerHTML += '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+value+'</div></li>';
+    myApp.showTab('#cancelados');
+    $$("#btn-cancelar-"+id).remove();
+  });
 }
 
 function adicionar_endereco()
@@ -404,39 +475,64 @@ function carregar_enderecos()
 {
   myApp.showPreloader();
   setTimeout(function () {
-    var json_dados = ajax_method(false,'usuario_has_endereco.select','usuario_id = '+localStorage.getItem("login_id"));
-    var retorno = JSON.parse(json_dados);
-    html = '';
-    for (i = 0; i < retorno.length; i++)
+    var json_dados = ajax_method(false,"usuario_has_endereco.select","usuario_id = "+localStorage.getItem("login_id"));
+    var usuario_has_endereco = JSON.parse(json_dados);
+    document.getElementById('ulenderecos').innerHTML = "";
+    document.getElementById('popups-enderecos').innerHTML = "";
+    for(var i=0;i<usuario_has_endereco.length;i++)
     {
-      json_dados = ajax_method(false,'endereco.select_by_id',retorno[i].endereco_id);
+      json_dados = ajax_method(false,'endereco.select_by_id',usuario_has_endereco[i].endereco_id);
       var endereco = JSON.parse(json_dados);
-      html += '<li class="accordion-item swipeout"><a href="#" class="item-content swipeout-content item-link" style="background-color: #FFFFFF;">'+
-                '<div class="item-inner" >'+
-                  '<div class="item-title">';
+      var html = '<li id="li-endereco-'+usuario_has_endereco[i].id+'">'+
+                  '<a href="#" class="item-link open-popup" data-popup=".popup-endereco-'+usuario_has_endereco[i].id+'">'+
+                    '<div class="item-content">' +
+                      '<div class="item-inner">'+
+                        '<div class="item-title">';
       if (localStorage.getItem("lat_padrao")==endereco[0].latitude && localStorage.getItem("long_padrao")==endereco[0].longitude)
-        html+='<i class="fa fa-star">';
+        html+='<i class="fa fa-star"> ';
       else
-        html+='<i class="fa fa-university">';
+        html+='<i class="fa fa-university"></i>';
 
-      botaum = "seleciona("+endereco[0].latitude+","+endereco[0].longitude+");"; 
+                        html += usuario_has_endereco[i].nome+'</div>'+
+                      '</div>'+
+                   '</div>'+
+                   '</a>'+
+                 '</li>';
+      botaum = "seleciona("+usuario_has_endereco[i].id+","+endereco[0].latitude+","+endereco[0].longitude+");"; 
 
-      html+='</i>   '+retorno[i].nome+'</div>'+
-                    '</div></a>'+
-                      '<div class="accordion-item-content swipeout-content" style="background-color:#EDEDED;"><div class="content-block">'+
-                          '<p>Rua: '+endereco[0].rua+'</p>'+
-                          '<p>Número: '+endereco[0].num+'. Complemento: '+endereco[0].complemento+'</p>'+
-                          '<p>CEP:'+endereco[0].cep+'</p>'+
-                          '<p>Cidade: '+endereco[0].cidade+'. Bairro: '+endereco[0].bairro+'</p>'+
-                          '<p>UF: '+endereco[0].uf+'. País: '+endereco[0].pais+'</p>';
-      if (localStorage.getItem("lat_padrao")!=endereco[0].latitude && localStorage.getItem("long_padrao")!=endereco[0].longitude)
-        html += '<p><a onclick="'+botaum+'" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
-      html += '</div></div>'+
-              '<div class="swipeout-actions-left "><a href="addendereco.html?id='+retorno[i].endereco_id+'&nome='+retorno[i].nome+'" class="action1 bg-orange">Editar</a></div>'+
-              '<div class="swipeout-actions-right "><a onclick="excluir_endereco('+retorno[i].endereco_id+')" class="swipeout-delete bg-red">Excluir</a></div>'+
-              '</li>';
+      document.getElementById("popups-enderecos").innerHTML += '<div class="popup popup-endereco-'+usuario_has_endereco[i].id+'">'+
+                                                                  '<div class="navbar">'+
+                                                                    '<div class="navbar-inner">'+
+                                                                      '<div class="left">'+
+                                                                        '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                        '<div id="hd">'+
+                                                                          'Detalhes do endereco'+
+                                                                        '</div>'+
+                                                                      '</div>'+
+                                                                    '</div>'+
+                                                                  '</div>'+
+                                                                '<div class="content-block">'+
+                                                                  '<div class="list-block">'+
+                                                                    '<ul id="ul-endereco-'+usuario_has_endereco[i].id+'">'+
+                                                                      '<li class="item-content"><div class="item-title">Nome do endereço</div><div class="item-after">'+usuario_has_endereco[i].nome+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Rua</div><div class="item-after">'+endereco[0].rua+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Numero</div><div class="item-after">'+endereco[0].num+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Complemento</div><div class="item-after">'+endereco[0].complemento+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Estado</div><div class="item-after">'+endereco[0].uf+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Cidade</div><div class="item-after">'+endereco[0].cidade+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Bairro</div><div class="item-after">'+endereco[0].bairro+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">País</div><div class="item-after">'+endereco[0].pais+'</div></li>'+
+                                                                    '</ul>'+
+                                                                    '<div id="bot'+usuario_has_endereco[i].id+'"></div>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`);" href="addendereco.html?id='+usuario_has_endereco[i].endereco_id+'&nome='+usuario_has_endereco[i].nome+'" class="button button-raised button-fill color-orange">Editar</a></p>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`); excluir_endereco('+usuario_has_endereco[i].endereco_id+')" class="button button-raised button-fill color-red">Excluir</a></p>'+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</div>';
+    document.getElementById("ulenderecos").innerHTML += html;
+    if (localStorage.getItem("lat_padrao")!=endereco[0].latitude && localStorage.getItem("long_padrao")!=endereco[0].longitude)
+      document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
     }
-    document.getElementById('ulenderecos').innerHTML = html;
     myApp.hidePreloader();
   },500);
 }
@@ -647,7 +743,9 @@ function logout()
 {
   myApp.closePanel();
   $$("#ba").hide();
-  localStorage.removeItem("login_id");  
+  localStorage.removeItem("login_id");
+  localStorage.removeItem("lat_padrao");
+  localStorage.removeItem("long_padrao");
   mainView.router.back();
   remover_menu();
   mostrar_tela_login();
@@ -895,8 +993,9 @@ function cadastro()
   },500);
 }
 
-function seleciona (lat,long)
+function seleciona (id,lat,long)
 {
+  myApp.closeModal('.popup-endereco-'+id);
   localStorage.setItem('lat_padrao',lat);
   localStorage.setItem('long_padrao',long);
   mainView.router.refreshPage();
