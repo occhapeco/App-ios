@@ -1,5 +1,5 @@
 var xhrTimeout=1000;
-var url='http://descartes.esy.es/';
+var url='http://localhost/Descartes-Web/service/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
@@ -316,6 +316,7 @@ function criar_agendamento()
     }
     else
       myApp.alert("Um ou mais campos foram deixados em branco.");
+    mainView.router.back();
     myApp.hidePreloader();
   },500);
 }
@@ -460,15 +461,18 @@ function adicionar_endereco()
       if(usuario_has_endereco_id == 0)
       {
         var retorno = ajax_method(false,'endereco.delete',retorno);
-        myApp.alert("Seu endereco não pode ser criado, reveja suas informações ou sua conexão por favor.");
+        myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+      }
+      else
+      {
+        mainView.router.back();
+        carregar_enderecos();
       }
     }
     else
-      myApp.alert("Seu endereco não pode ser criado, reveja suas informações ou sua conexão por favor.");
+      myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
     myApp.hidePreloader();
-    mainView.router.loadPage('enderecos.html');
   },500);
-
 }
 
 function carregar_enderecos()
@@ -541,7 +545,8 @@ function carregar_notificacoes()
 {
   myApp.showPreloader();
   setTimeout(function () {
-    var json_dados = ajax_method(false,'notificacao.select_by_usuario',localStorage.getItem("login_id"));
+    var json_dados = ajax_method(false,'notificacao.visualizar_todos_by_usuario',localStorage.getItem("login_id"));
+    json_dados = ajax_method(false,'notificacao.select_by_usuario',localStorage.getItem("login_id"));
     var retorno = JSON.parse(json_dados);
     html = '';
     for (i = 0; i < retorno.length; i++)
@@ -549,16 +554,13 @@ function carregar_notificacoes()
       if (retorno[i].destino == 0) {
         json_dados = ajax_method(false,'empresa.select_by_id',retorno[i].empresa_id);
         var empresa = JSON.parse(json_dados);
-        html += '<li class="swipeout">'+
-                    '<div class="swipeout-content item-content">'+
-                      '<div class="item-media"></div>'+
-                      '<div class="item-inner">'+empresa[0].nome_fantasia;
-                      if (retorno[i].tipo == 1)
-                        html += ' aceitou o agendamento.</div>';
-                      if (retorno[i].tipo == 2)
-                        html += ' recusou o agendamento.</div>';
-                    html +='</div>';
-        html += '<div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Excluir</a></div></li>';
+        html += '<li class="item-link swipeout">'+
+                    '<div class="swipeout-content item-content">';
+        if (retorno[i].tipo == 0)
+          html += '<div class="item-media"><i class="fa fa-hourglass-2"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' aceitou o agendamento.</div>';
+        if (retorno[i].tipo == 1)
+          html += '<div class="item-media"><i class="fa fa-calendar-times-o"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' recusou o agendamento.</div>';
+        html +='</div><div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Excluir</a></div></li>';
       }
     }
     document.getElementById('ulnotificacoes').innerHTML = html;
@@ -662,7 +664,6 @@ function criar_menu()
 
 function mostrar_tela_mapa()
 {
-  //document.getElementById("main_nav").innerHTML += ;
   document.getElementById("index_page").innerHTML = '<div data-page="mapa" class="page">'+
                                                       '<div class="page-content">'+
                                                         '<div id="map"></div>'+
@@ -968,27 +969,27 @@ function codeAddressa() {
 
 function cadastro()
 {
-  myApp.showPreloader();
-  setTimeout(function () {
-    if(document.getElementById("cad_senha").value == document.getElementById("cad_senha2").value)
-    {
+  if(document.getElementById("cad_senha").value == document.getElementById("cad_senha2").value)
+  {
+    myApp.showPreloader("Realizando cadastro...");
+    setTimeout(function () {
       var adduser = ajax_method(false,'usuario.insert',document.getElementById("cad_nome").value,document.getElementById("cad_email").value,document.getElementById("cad_senha").value,document.getElementById("cad_cpf").value,document.getElementById("cad_telefone").value);
+      myApp.hidePreloader();
       if(adduser != 0)
       {
-        myApp.hidePreloader();
+        localStorage.setItem("login_id",adduser);
         mainView.router.back();
+        criar_menu();
         mostrar_tela_mapa();
         mapa_refresh();
-        criar_menu();
-        localStorage.setItem("login_id",adduser);
       }
       else
-      {
-        myApp.hidePreloader();
-        myApp.alert("Seu perfil não pode ser criado, reveja suas informações ou sua conexão por favor.");
-      }
-    }
-  },500);
+        myApp.alert("Seu perfil não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+      myApp.hidePreloader();
+    },500);
+  }
+  else
+    myApp.alert("Senhas não correspondem!");
 }
 
 function seleciona(id,lat,long)
@@ -1032,27 +1033,32 @@ function editar_endereco()
     myApp.showPreloader();
     setTimeout(function () {
       var json_dados = ajax_method(false,'endereco.update',document.getElementById('id').value,document.getElementById('rua').value,document.getElementById('numero').value,document.getElementById('complemento').value,document.getElementById('cep').value,document.getElementById('bairro').value,document.getElementById('estado').value,document.getElementById('cidade').value,document.getElementById('pais').value,document.getElementById('lat').value,document.getElementById('long').value);
-      if (json_dados) {
-         myApp.hidePreloader();
+      if (json_dados)
+      {
          mainView.router.back();
+         carregar_enderecos();
       }
-      else{
-        myApp.hidePreloader();
+      else
         myApp.alert("Não foi possível editar seu endereço, por favor, reveja sua conexão ou dados.")
-      }
+      myApp.hidePreloader();
     },500);
 }
 
 function excluir_endereco(id)
 {
-    setTimeout(function () {
-      var json_dados = ajax_method(false,'endereco.delete',id);
-      if (json_dados) {
-      }
-      else{
-        myApp.alert("Não foi possível excluir seu endereço, por favor, reveja sua conexão.");
-      }
-    },500);
+  myApp.showPreloader();
+  setTimeout(function () {
+    var json_dados = ajax_method(false,'endereco.delete',id);
+    if (!json_dados)
+    {
+      myApp.alert("Não foi possível excluir seu endereço. Por favor, reveja sua conexão.");
+    }
+    else
+    {
+      myApp.hidePreloader();
+      carregar_enderecos();
+    }
+  },500);
 }
 
 function excluir_notificacao(id)
