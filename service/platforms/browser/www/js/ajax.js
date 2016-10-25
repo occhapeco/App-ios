@@ -1,8 +1,11 @@
 var xhrTimeout=1000;
-var url='http://localhost/Descartes-Web/service/';
+var url='http://descarteslab.sc.senai.br/service/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
+
+var teste = ajax_method('usuario.select','');
+alert(teste);
 
 var myApp = new Framework7({
     pushState: true,
