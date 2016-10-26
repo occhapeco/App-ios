@@ -4,9 +4,6 @@ var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
 
-var teste = ajax_method('usuario.select','');
-alert(teste);
-
 var myApp = new Framework7({
     pushState: true,
     animatePages: true,
@@ -917,6 +914,7 @@ function ajax_method()
     httpRequest = new ActiveXObject("Microsoft.XMLHTTP"); 
   }
   httpRequest.open("POST",url,sync);
+  httpRequest.withCredentials = true;
   if (httpRequest.overrideMimeType) { 
     httpRequest.overrideMimeType("text/xml"); 
   }
