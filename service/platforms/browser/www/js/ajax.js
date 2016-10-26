@@ -1,5 +1,5 @@
 var xhrTimeout=1000;
-var url='http://descarteslab.sc.senai.br/service/';
+var url='http://descartes.esy.es/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
@@ -755,7 +755,7 @@ function logout()
 function select_pontos()
 {
   if (localStorage.getItem("long_padrao") != null) {
-    var json_dados = ajax_method(false,'tipo_lixo.select','');    
+    var json_dados = ajax_method(false,'tipo_lixo.select','');
     var tipo_lixo = JSON.parse(json_dados);
     var num = 0;
     var condicao = '';
