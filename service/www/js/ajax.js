@@ -623,7 +623,7 @@ function alterar_senha()
 
 function criar_menu()
 {
-  var panel_html = '<li><a href="mapa.html" class="item-link">'+
+  var panel_html = '<li><a href="index.html" class="item-link">'+
                       '<div class="item-content">'+
                         '<div class="item-inner"> '+
                           '<div class="item-title">Mapa</div>'+
@@ -653,6 +653,12 @@ function criar_menu()
                             '<div class="item-title">Notificações</div>'+
                           '</div>'+
                         '</div></a></li>'+
+                    '<li><a href="sobre.html" class="item-link" onclick="myApp.closePanel();">'+
+                      '<div class="item-content">'+
+                        '<div class="item-inner"> '+
+                          '<div class="item-title">Sobre</div>'+
+                        '</div>'+
+                      '</div></a></li>'+
                     '<li><a href="#" class="item-link" onclick="logout();">'+
                         '<div class="item-content"> '+
                           '<div class="item-inner">'+
