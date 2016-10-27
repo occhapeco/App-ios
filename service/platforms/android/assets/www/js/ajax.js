@@ -1,5 +1,5 @@
 var xhrTimeout=1000;
-var url='http://megainstal.com.br/service/';
+var url='http://descarteslab.sc.senai.br/service/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var markerCluster;
@@ -623,7 +623,7 @@ function alterar_senha()
 
 function criar_menu()
 {
-  var panel_html = '<li><a href="mapa.html" class="item-link">'+
+  var panel_html = '<li><a href="index.html" class="item-link">'+
                       '<div class="item-content">'+
                         '<div class="item-inner"> '+
                           '<div class="item-title">Mapa</div>'+
@@ -653,6 +653,12 @@ function criar_menu()
                             '<div class="item-title">Notificações</div>'+
                           '</div>'+
                         '</div></a></li>'+
+                    '<li><a href="sobre.html" class="item-link" onclick="myApp.closePanel();">'+
+                      '<div class="item-content">'+
+                        '<div class="item-inner"> '+
+                          '<div class="item-title">Sobre</div>'+
+                        '</div>'+
+                      '</div></a></li>'+
                     '<li><a href="#" class="item-link" onclick="logout();">'+
                         '<div class="item-content"> '+
                           '<div class="item-inner">'+
@@ -678,7 +684,7 @@ function mostrar_tela_login()
   $$("#ba").hide();
   document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
                                                       '<div class="page-content login-screen-content">'+
-                                                        '<div class="login-screen-title">Descartes Lab</div>'+
+                                                        '<div class="login-screen-title"><img src="img/login.png" width="90%" height="5%"></div>'+
                                                           '<div class="list-block">'+
                                                             '<ul>'+
                                                               '<li class="item-content">'+
