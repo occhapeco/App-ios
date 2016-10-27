@@ -684,7 +684,7 @@ function mostrar_tela_login()
   $$("#ba").hide();
   document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
                                                       '<div class="page-content login-screen-content">'+
-                                                        '<div class="login-screen-title">Descartes Lab</div>'+
+                                                        '<div class="login-screen-title"><img src="img/login.png" width="90%" height="5%"></div>'+
                                                           '<div class="list-block">'+
                                                             '<ul>'+
                                                               '<li class="item-content">'+
