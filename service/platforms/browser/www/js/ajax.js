@@ -980,13 +980,10 @@ function cadastro()
       {
         localStorage.setItem("login_id",adduser);
         mainView.router.back();
-        criar_menu();
-        mostrar_tela_mapa();
-        mapa_refresh();
+        myApp.alert("Cadastro realizado com êxiito! Faça o login para continuar.");
       }
       else
         myApp.alert("Seu perfil não pôde ser criado, reveja suas informações ou sua conexão por favor.");
-      myApp.hidePreloader();
     },500);
   }
   else
