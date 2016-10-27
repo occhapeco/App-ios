@@ -728,16 +728,53 @@ function login()
     {
       localStorage.setItem("login_id",id);
       $$("#ba").show();
+      cria_login();
       criar_menu();
       mostrar_tela_mapa();
-      mapa_refresh();
+      //mapa_refresh();
     }
     else
     {
       myApp.alert('Email ou senha não correspondem!');
     }
     myApp.hidePreloader();
+    mainView.refreshPage();
   },100);
+}
+
+function cria_login(){
+  document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
+                                               ' <div class="left">'+
+                                                  '<a href="#" class="link icon-only open-panel" id="bc"> <i class="icon icon-bars"></i></a>'+
+                                                  '<div id="hd">'+
+                                                   ' DescartesLab'+
+                                                 ' </div>'+
+                                               ' </div>'+
+                                               ' <div id="hc" class="hi" style="width:100%;">'+
+                                                  '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
+                                                   ' <div class="searchbar-input">'+
+                                                     ' <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">'+
+                                                   ' </div>'+
+                                                    '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancelar</a>'+
+                                                  '</form>'+
+                                                '</div>'+
+                                                '<div class="center">'+
+                                                  '<div onclick="cancela_rota();" id="hb" class="hi">'+
+                                                   ' Apagar Rota <i class="fa fa-remove"></i>'+
+                                                  '</div>'+
+                                                '</div>'+
+                                                '<div class="right" style="margin-left: 0 !important">'+
+                                                  '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
+                                                    '<i class="fa fa-filter"></i>'+
+                                                 ' </a>'+
+                                                  '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
+                                                   ' <i class="fa fa-refresh"></i>'+
+                                                  '</a>'+
+                                                 ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
+                                                      '<i class="fa fa-search" id="loc"></i>'+
+                                                  '</a>'+
+                                               ' </div>'+
+                                              '</div>';
 }
 
 function logout()
