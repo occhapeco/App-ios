@@ -430,7 +430,7 @@ function carregar_agendamentos()
 
 function cancelar_agendamento(id,empresa,endereco)
 {
-  myApp.prompt(`Qual a justificativa do cancelamento?`, function (value) {
+ // myApp.prompt(`Qual a justificativa do cancelamento?`, function (value) {
     myApp.closeModal('.popup-agendamento-'+id);
     var json = ajax_method(false,'agendamento.cancelar',id,value);
     var html = '<li id="li-agendamento-'+id+'">'+
@@ -447,7 +447,7 @@ function cancelar_agendamento(id,empresa,endereco)
     document.getElementById("ul-agendamento-"+id).innerHTML += '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+value+'</div></li>';
     myApp.showTab('#cancelados');
     $$("#btn-cancelar-"+id).remove();
-  });
+ // });
 }
 
 function adicionar_endereco()
