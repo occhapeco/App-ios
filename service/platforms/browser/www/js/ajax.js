@@ -126,6 +126,11 @@ $$(document).on('pageInit', function (e) {
         }
       },300);
     }
+
+    if (page.name.indexOf('smart-select')>=0)
+    {
+      document.getElementsByClassName("close-popup").on('click', function(){ console.log("sdadsa"); })
+    }
  
     if(page.name == 'perfil')
     {
@@ -797,22 +802,18 @@ function logout()
 
 function select_pontos()
 {
-  if (localStorage.getItem("long_padrao") != null) {
-    var json_dados = ajax_method(false,'tipo_lixo.select','');
-    var tipo_lixo = JSON.parse(json_dados);
-    var num = 0;
+  if (localStorage.getItem("long_padrao") != null)
+  {
     var condicao = '';
-    for(var j=0;j<tipo_lixo.length;j++)
+    var tipos_lixo = obter_select(document.getElementById("select-filtros"));
+    var tipos_lixo_nome;
+    for(var i=0;i<tipos_lixo.length;i++)
     {
-      if(document.getElementById("tipo_lixo_"+tipo_lixo[j].id).checked == true)
-      {
-        if(num != 0)
-          condicao += " OR";
-        condicao += " tipo_lixo_id = "+tipo_lixo[j].id;
-        num++;
-      }
+      if(num != 0)
+        condicao += " OR";
+      condicao += " tipo_lixo_id = "+tipos_lixo[i];
+      tipo_lixo_nome[i] = document.getElementById("input-filtros-"+tipos_lixo[i]).value;
     }
-
 
     json_dados = ajax_method(false,'ponto.select_by_coordenadas',localStorage.getItem("lat_padrao"),localStorage.getItem("long_padrao"));
     var ponto = JSON.parse(json_dados);
@@ -823,18 +824,17 @@ function select_pontos()
     for(var i=0;i<ponto.length;i++)
     {
       var condi = " ponto_id = "+ponto[i].id+" AND ("+condicao+")";
-      if(num == 0)
+      if(tipos_lixo.length == 0)
         condi = '';
       json_dados = ajax_method(false,'tipo_lixo_has_ponto.select',condi);
       tipo_lixo_has_ponto = JSON.parse(json_dados);
       
       if(tipo_lixo_has_ponto.length > 0)
       {
-        var tipos_lixo = '';
-        for(j=0;j<tipo_lixo.length;j++)
-          for(var h=0;h<tipo_lixo_has_ponto.length;h++)
-            if(tipo_lixo[j].id == tipo_lixo_has_ponto[h].tipo_lixo_id)
-              tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome+'</div></li>';
+        var tipos_lixo_html = '';
+        for(j=0;j<tipos_lixo.length;j++)
+          tipos_lixo_html += '<li class="item-content"><div class="item-title">'+tipos_lixo_nome[j]+'</div></li>';
+
         json_dados = ajax_method(false,'endereco.select_by_id',ponto[i].endereco_id);
         document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
                                                           '<div class="navbar">'+
@@ -850,7 +850,7 @@ function select_pontos()
                                                         '<div class="content-block">'+
                                                           '<div class="list-block">'+
                                                             '<ul>'+
-                                                              tipos_lixo+
+                                                              tipos_lixo_html+
                                                             '</ul>'+
                                                           '</div>'+
                                                         '</div>'+
@@ -915,25 +915,17 @@ function criar_tipos_lixo()
 
 function criar_popover()
 {
-  var component = document.getElementById("popover-list");
-  var html = '<ul>';
+  var component = document.getElementById("select-filtros");
+  var html = '';
 
   var json_dados = ajax_method(false,'tipo_lixo.select','');
   var tipo_lixo = JSON.parse(json_dados);
 
   for(var i=0;i<tipo_lixo.length;i++)
-    html += '<li>'+
-              '<label class="label-checkbox item-content">'+
-                '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'"  name="tipo_lixo_'+tipo_lixo[i].id+'" value="'+tipo_lixo[i].id+'" checked="false">'+
-                '<div class="item-media">'+
-                  '<i class="icon icon-form-checkbox"></i>'+
-                '</div>'+
-                '<div class="item-inner">'+
-                  '<div class="item-title">'+tipo_lixo[i].nome+'</div>'+
-                '</div>'+
-              '</label>'+
-            '</li>';
-  html +=   '</ul>';
+  {
+    html += '<option value='+tipo_lixo[i].id+'>'+tipo_lixo[i].nome+'</option>';
+    document.getElementById("inputs-filtros").innerHTML += '<input type="hidden" id="input-filtros-'+tipo_lixo[i].id+'" value="'+tipo_lixo[i].nome+'">';
+  }
   component.innerHTML = html;
 }
 
