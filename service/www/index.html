@@ -115,7 +115,7 @@
             </div>
           </div>
           <div class="right" style="margin-left: 0 !important">
-            <a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">
+            <a href="#" class="item-link open-popup" id="popover-btn" data-popup=".popup-filtros" style="width:30px !important; min-width: 0 !important;">
               <i class="fa fa-filter"></i>
             </a>
             <a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">
@@ -138,35 +138,25 @@
       </div>
     </div> 
 
-    <!--FILTROS-->
-    <div class="popover demo-popover" style="z-index:1333330 !important;" id="filter-popover">
-      <div class="popover-inner">
+    <div class="popup popup-filtros">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="left">
+            <a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>
+              Filtrar por materiais
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <a onclick="aplicar_filtro();" style="width:100%;margin: -20px 0px -s20px 0px;" class="button button-raised button-fill color-bluegray">Aplicar</a>
         <div class="list-block">
-          <ul>
-            <li>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Filtros</div>
-                </div>
-             </div>
-            </li>
-          </ul>
-        </div>
-        <div id="popover-list" class="list-block" style="margin: 0px 0px 0px 0px;max-height: 300px;overflow: auto;">
-          <!-- Conteúdo do popover (óbvio) -->
-        </div>
-        <div class="list-block" style="margin: 0px 0px 0px 0px;">
-          <ul>
-            <li>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <a onclick="aplicar_filtro();" style="width:100%;" class="button button-raised button-fill color-bluegray">Aplicar</a>
-                  </div>
-               </div>
-            </li>
+          <ul id="ul-filtros-materiais">
+            
           </ul>
         </div>
       </div>
+   
     </div>
 
     <div id="popups">

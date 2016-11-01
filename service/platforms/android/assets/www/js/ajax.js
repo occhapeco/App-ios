@@ -823,18 +823,28 @@ function select_pontos()
     for(var i=0;i<ponto.length;i++)
     {
       var condi = " ponto_id = "+ponto[i].id+" AND ("+condicao+")";
+
       if(num == 0)
-        condi = '';
+        condi = " ponto_id = "+ponto[i].id;
+
       json_dados = ajax_method(false,'tipo_lixo_has_ponto.select',condi);
       tipo_lixo_has_ponto = JSON.parse(json_dados);
-      
+
       if(tipo_lixo_has_ponto.length > 0)
       {
+        json_dados = ajax_method(false,'tipo_lixo_has_ponto.select'," ponto_id = "+ponto[i].id);
+        tipo_lixo_has_ponto = JSON.parse(json_dados);
         var tipos_lixo = '';
         for(j=0;j<tipo_lixo.length;j++)
+        {
+          var add = false;
           for(var h=0;h<tipo_lixo_has_ponto.length;h++)
-            if(tipo_lixo[j].id == tipo_lixo_has_ponto[h].tipo_lixo_id)
+            if(!add && (tipo_lixo[j].id == tipo_lixo_has_ponto[h].tipo_lixo_id))
+            {
               tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome+'</div></li>';
+              add = true;
+            }
+        }
         json_dados = ajax_method(false,'endereco.select_by_id',ponto[i].endereco_id);
         document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
                                                           '<div class="navbar">'+
@@ -915,8 +925,8 @@ function criar_tipos_lixo()
 
 function criar_popover()
 {
-  var component = document.getElementById("popover-list");
-  var html = '<ul>';
+  var component = document.getElementById("ul-filtros-materiais");
+  var html = '';
 
   var json_dados = ajax_method(false,'tipo_lixo.select','');
   var tipo_lixo = JSON.parse(json_dados);
@@ -924,7 +934,7 @@ function criar_popover()
   for(var i=0;i<tipo_lixo.length;i++)
     html += '<li>'+
               '<label class="label-checkbox item-content">'+
-                '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'"  name="tipo_lixo_'+tipo_lixo[i].id+'" value="'+tipo_lixo[i].id+'" checked="false">'+
+                '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'" name="tipo_lixo_'+tipo_lixo[i].id+'" value='+tipo_lixo[i].id+'>'+
                 '<div class="item-media">'+
                   '<i class="icon icon-form-checkbox"></i>'+
                 '</div>'+
@@ -933,7 +943,6 @@ function criar_popover()
                 '</div>'+
               '</label>'+
             '</li>';
-  html +=   '</ul>';
   component.innerHTML = html;
 }
 
