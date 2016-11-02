@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="br.oc.descartes" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Descartes</name>
+<widget id="br.oc.descartes" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>DescartesLab</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Vago
     </description>
     <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+        Olimpiada
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
