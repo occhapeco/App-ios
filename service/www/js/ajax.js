@@ -902,7 +902,7 @@ function select_pontos()
                                  '</li>'+
                                 '<li><div class="item-content"><div class="item-title">'+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div></div></li>'+
                             '</ul>';
-        if(empresa[0].agendamentos)
+        if(empresa[0].agendamento == 1)
         {
           features["info"] += '<p class="buttons-row">'+
                                   '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
