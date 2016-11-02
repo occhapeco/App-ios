@@ -901,11 +901,15 @@ function select_pontos()
                                    '</a>'+
                                  '</li>'+
                                 '<li><div class="item-content"><div class="item-title">'+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div></div></li>'+
-                             '</ul>'+
-                             '<p class="buttons-row">'+
-                               '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
-                             '</p>'+
-                             '<p class="buttons-row">'+
+                            '</ul>';
+        if(empresa[0].agendamentos)
+        {
+          features["info"] += '<p class="buttons-row">'+
+                                  '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
+                              '</p>';
+        }
+                             
+          features["info"] +='<p class="buttons-row">'+
                                '<a href="#" style="width:100%" class="button button-raised button-fill color-blue" onclick ="calculateAndDisplayRoute'+
                                '('+endereco[0].latitude+','+endereco[0].longitude+')">Criar rota</a>'+
                              '</p>'
