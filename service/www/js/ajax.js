@@ -708,7 +708,7 @@ function mostrar_tela_login()
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Email</div>'+
                                                                     '<div class="item-input">'+
-                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@batata.com" required>'+
+                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@servidor.com" required>'+
                                                                     '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
