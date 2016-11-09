@@ -374,9 +374,14 @@ function carregar_agendamentos()
       var vaijus = '<li class="item-content" id="liberg_'+agendamento[i].id+'"><div class="item-input"><input type="text" id="just_'+agendamento[i].id+'" placeholder="Digite aqui a justificativa caso vá cancelar"></div></li>';
       if(agendamento[i].justificativa == null)
         justificativa = "";
-      var btn = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar agendamento</a></p>';
+      var btn1 = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar agendamento</a></p>';
+      var btn2 = '<p id="btn-realizar-'+agendamento[i].id+'"><a onclick="realizar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Realizar agendamento</a></p>';
+
       if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 0))
+      {
         document.getElementById('espera').innerHTML += html;
+        btn2 = "";
+      }
       else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0) && (data < hoje))
         document.getElementById('atrasados').innerHTML += html;
       else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 0))
@@ -384,13 +389,15 @@ function carregar_agendamentos()
       else if((agendamento[i].aceito == 1) && (agendamento[i].realizado == 1) && (data >= hoje))
       {
         document.getElementById('realizados').innerHTML += html;
-        btn = "";
+        btn1 = "";
+        btn2 = "";
         vaijus='';
       }
       else if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 1))
       {
         document.getElementById('cancelados').innerHTML += html;
-        btn = "";
+        btn1 = "";
+        btn2 = "";
         vaijus='';
       }
 
@@ -436,7 +443,8 @@ function carregar_agendamentos()
                                                                       '<li class="item-content"><div class="item-title">Horário agendado</div><div class="item-after">'+agendamento[i].horario+'</div></li>'+vaijus+
                                                                       justificativa+
                                                                     '</ul>'+
-                                                                    btn+
+                                                                    btn2+
+                                                                    btn1+
                                                                   '</div>'+
                                                                 '</div>'+
                                                               '</div>';
@@ -445,6 +453,27 @@ function carregar_agendamentos()
     }
     myApp.hidePreloader();
   },500);
+}
+
+function realizar_agendamento(id,empresa,endereco)
+{
+  myApp.closeModal('.popup-agendamento-'+id);
+  var json = ajax_method(false,'agendamento.realizar',id,document.getElementById('just_'+id).value);
+  var html = '<li id="li-agendamento-'+id+'">'+
+                '<a href="#" class="item-link open-popup" data-popup=".popup-agendamento-'+id+'">'+
+                  '<div class="item-content">' +
+                    '<div class="item-inner">'+
+                      '<div class="item-title">'+empresa+' - '+endereco+'</div>'+
+                    '</div>'+
+                 '</div>'+
+                 '</a>'+
+               '</li>';
+  document.getElementById('li-agendamento-'+id).remove();
+  document.getElementById('cancelados').innerHTML += html;
+  document.getElementById('liberg_'+id).remove();
+  myApp.showTab('#cancelados');
+  $$("#btn-cancelar-"+id).remove();
+  $$("#btn-realizar-"+id).remove();
 }
 
 function cancelar_agendamento(id,empresa,endereco)
@@ -468,6 +497,7 @@ function cancelar_agendamento(id,empresa,endereco)
       document.getElementById('liberg_'+id).remove();
       myApp.showTab('#cancelados');
       $$("#btn-cancelar-"+id).remove();
+      $$("#btn-realizar-"+id).remove();
   }else{
     myApp.alert("Por favor, dê uma justificativa para o cancelamento do agendamento.");
   }
@@ -708,7 +738,7 @@ function mostrar_tela_login()
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Email</div>'+
                                                                     '<div class="item-input">'+
-                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@batata.com" required>'+
+                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@servidor.com" required>'+
                                                                     '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
