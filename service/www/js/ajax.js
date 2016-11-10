@@ -459,8 +459,12 @@ function carregar_agendamentos()
       json_dados = ajax_method(false,'agendamento_has_tipo_lixo.select_by_agendamento',agendamento[i].id);
       var agendamento_has_tipo_lixo = JSON.parse(json_dados);
       var tipos_lixo = "";
-      if(agendamento_has_tipo_lixo.length == 0)
-        tipos_lixo = "Nenhum";
+      if(agendamento_has_tipo_lixo.length == 0){
+        if(localStorage.getItem("idioma") == "eng")
+            tipos_lixo = "None";
+        else
+           tipos_lixo = "Nenhum";
+      }
 
       for(var j=0;j<agendamento_has_tipo_lixo.length;j++)
       {
@@ -579,7 +583,10 @@ function cancelar_agendamento(id,empresa,endereco)
                    '</li>';
       document.getElementById('li-agendamento-'+id).remove();
       document.getElementById('cancelados').innerHTML += html;
-      document.getElementById("ul-agendamento-"+id).innerHTML += '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+document.getElementById('just_'+id).value+'</div></li>';
+      if(localStorage.getItem("idioma") == "eng")
+        document.getElementById("ul-agendamento-"+id).innerHTML += '<li class="item-content"><div class="item-title">Justification</div><div class="item-after">'+document.getElementById('just_'+id).value+'</div></li>';
+      else
+        document.getElementById("ul-agendamento-"+id).innerHTML += '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+document.getElementById('just_'+id).value+'</div></li>';
       document.getElementById('liberg_'+id).remove();
       myApp.showTab('#cancelados');
       $$("#btn-cancelar-"+id).remove();
@@ -678,8 +685,8 @@ function carregar_enderecos()
                                                                       '<li class="item-content"><div class="item-title">Country</div><div class="item-after">'+endereco[0].pais+'</div></li>'+
                                                                     '</ul>'+
                                                                     '<div id="bot'+usuario_has_endereco[i].id+'"></div>'+
-                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`);" href="addendereco.html?id='+usuario_has_endereco[i].endereco_id+'&nome='+usuario_has_endereco[i].nome+'" class="button button-raised button-fill color-orange">Editar</a></p>'+
-                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`); excluir_endereco('+usuario_has_endereco[i].endereco_id+')" class="button button-raised button-fill color-red">Excluir</a></p>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`);" href="addendereco.html?id='+usuario_has_endereco[i].endereco_id+'&nome='+usuario_has_endereco[i].nome+'" class="button button-raised button-fill color-orange">Edit</a></p>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`); excluir_endereco('+usuario_has_endereco[i].endereco_id+')" class="button button-raised button-fill color-red">Delete</a></p>'+
                                                                   '</div>'+
                                                                 '</div>'+
                                                               '</div>';
