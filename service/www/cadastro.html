@@ -1,11 +1,11 @@
 <div data-page="cadastro.html" class="page no-navbar no-toolbar no-swipeback">
   <div class="page-content login-screen-content">
-    <div class="login-screen-title">Descartes Lab</div>
+    <div class="login-screen-title">DescartesLab</div>
       <div class="list-block" style="margin:0 !important;">
         <ul>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title label">Nome</div>
+              <div class="item-title label" id="cadastro_nome">Nome</div>
               <div class="item-input">
                 <input type="text" name="cad_nome" id="cad_nome" placeholder="Ex: João da Silva" required>
               </div>
@@ -21,7 +21,7 @@
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title label">Senha</div>
+              <div class="item-title label" id="cadastro_senha">Senha</div>
               <div class="item-input">
                 <input type="password" name="cad_senha" id="cad_senha" placeholder="ex: *******" required>
               </div>
@@ -29,7 +29,7 @@
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title label">Senha novamente</div>
+              <div class="item-title label" id="cadastro_senha_novamente">Senha novamente</div>
               <div class="item-input">
                 <input type="password" name="cad_senha2" id="cad_senha2" placeholder="ex: *******" required>
               </div>
@@ -45,7 +45,7 @@
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title label">Telefone</div>
+              <div class="item-title label" id="cadastro_telefone">Telefone</div>
               <div class="item-input">
                 <input type="number" name="cad_telefone" id="cad_telefone" placeholder="ex: 12348888" required>
               </div>
@@ -54,8 +54,8 @@
         </ul>
       </div>
         <div class="list-block-label" style="padding-left:15px;padding-right:15px;">
-          <p><a onclick="cadastro();" class="button">Cadastrar</a></p>
-          <p><a href="#" class="back button">Já possui cadastro? Clique aqui!</a></p>
+          <p><a onclick="cadastro();" class="button" id="cadastro_cadastrar">Cadastrar</a></p>
+          <p><a href="#" class="back button" id="cadastro_login">Já possui cadastro? Clique aqui!</a></p>
         </div>
       </div>
   </div>

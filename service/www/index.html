@@ -84,7 +84,7 @@
     <div class="panel panel-left panel-reveal" style="background-color:#FAFAFA;">
       <div class="list-block" style="margin:0 !important;">
         <ul id="local_panel">
-          <p>Você não realizou o login!</p>
+          <p id="index_login_nao_realizado">Você não realizou o login!</p>
         </ul>
       </div>
     </div>
@@ -106,12 +106,12 @@
               <div class="searchbar-input">
                 <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">
               </div>
-              <a href="#" class="searchbar-cancel" onclick="inverte();">Cancelar</a>
+              <a href="#" class="searchbar-cancel" onclick="inverte();" id="index_cancela_pesquisa">Cancelar</a>
             </form>
           </div>
           <div class="center">
             <div onclick="cancela_rota();" id="hb" class="hi">
-              Apagar Rota <i class="fa fa-remove"></i>
+              <div class="index_apagar">Apagar Rota</div>  <i class="fa fa-remove"></i>
             </div>
           </div>
           <div class="right" style="margin-left: 0 !important">
@@ -143,13 +143,13 @@
         <div class="navbar-inner">
           <div class="left">
             <a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>
-              Filtrar por materiais
+              <div class="index_filtrar_materiais">Filtrar por materiais</div> 
           </div>
         </div>
       </div>
 
       <div class="content-block">
-        <a onclick="aplicar_filtro();" style="width:100%;margin: -20px 0px -s20px 0px;" class="button button-raised button-fill color-bluegray">Aplicar</a>
+        <a onclick="aplicar_filtro();" style="width:100%;margin: -20px 0px -s20px 0px;" class="button button-raised button-fill color-bluegray" id="index_aplicar">Aplicar</a>
         <div class="list-block">
           <ul id="ul-filtros-materiais">
             
