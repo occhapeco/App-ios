@@ -5,23 +5,48 @@ var empresa_id = 0;
 var ponto_id = 0;
 var markerCluster;
 
-var myApp = new Framework7({
-    pushState: true,
-    animatePages: true,
-    swipeBackPage: true,
-    modalTitle: "DescartesLab",
-    modalButtonCancel: "Cancelar",
-    modalPreloaderTitle: "Carregando...",
-    smartSelectBackText: 'Voltar',
-    smartSelectPopupCloseText: 'Fechar',
-    smartSelectPickerCloseText: 'Definir',
-    init: false,
-    preloadPreviousPage : false,
-    uniqueHistory : true,
-    modalCloseByOutside : true,
-    popupCloseByOutside : true,
-    actionsCloseByOutside : true
-});
+var myApp;
+
+if(localStorage.getItem("idioma") == "eng")
+{
+  myApp = new Framework7({
+      pushState: true,
+      animatePages: true,
+      swipeBackPage: true,
+      modalTitle: "DescartesLab",
+      modalButtonCancel: "Cancel",
+      modalPreloaderTitle: "Loading...",
+      smartSelectBackText: 'Back',
+      smartSelectPopupCloseText: 'Close',
+      smartSelectPickerCloseText: 'Done',
+      init: false,
+      preloadPreviousPage : false,
+      uniqueHistory : true,
+      modalCloseByOutside : true,
+      popupCloseByOutside : true,
+      actionsCloseByOutside : true
+  });  
+}
+else
+{
+  myApp = new Framework7({
+      pushState: true,
+      animatePages: true,
+      swipeBackPage: true,
+      modalTitle: "DescartesLab",
+      modalButtonCancel: "Cancelar",
+      modalPreloaderTitle: "Carregando...",
+      smartSelectBackText: 'Voltar',
+      smartSelectPopupCloseText: 'Fechar',
+      smartSelectPickerCloseText: 'Definir',
+      init: false,
+      preloadPreviousPage : false,
+      uniqueHistory : true,
+      modalCloseByOutside : true,
+      popupCloseByOutside : true,
+      actionsCloseByOutside : true
+  });
+}
 var $$ = Dom7;
 
 // Add view
@@ -205,7 +230,8 @@ $$(document).on('pageInit', function (e) {
         });
       },400);
     }
-    
+    // TRADUZINDO AS PÁGINAS //
+    traduzir(page.name);
 });
 
 function mapa_refresh()
@@ -235,16 +261,20 @@ function aplicar_filtro()
 function inicializar()
 {
   myApp.onPageInit('index', function (page) {
-     if(localStorage.getItem("login_id") == null)
-      {
-        remover_menu();
-        mostrar_tela_login();
-      }
-      else
-      {
-        criar_menu();
-        mostrar_tela_mapa();
-      }
+    if(localStorage.getItem("login_id") == null)
+    {
+      remover_menu();
+      mostrar_tela_login();
+    }
+    else
+    {
+      criar_menu();
+      mostrar_tela_mapa();
+    }
+
+    if(localStorage.getItem("idioma") == null)
+      localStorage.setItem("idioma","pt");
+
   }).trigger();
   myApp.init();
   if(localStorage.getItem("login_id") != null)
@@ -314,7 +344,7 @@ function tutorial()
 
 function criar_agendamento()
 {
-  myApp.showPreloader("Agendando coleta...");
+  myApp.showPreloader();
   setTimeout(function () {
     var tipo_lixo_id = obter_select(document.getElementById("tipos_lixo_agendamento"));
     if ((document.getElementById("data_agendamento").value != "") && (document.getElementById("horario_agendamento").value != "") && (document.getElementById("quantidade_agendamento").value != "" && tipo_lixo_id.length != 0)) 
@@ -329,10 +359,20 @@ function criar_agendamento()
         mainView.router.loadPage('agendamentos.html');
       }
       else
-        myApp.alert("Erro ao fazer agendamento.");
+      {
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Error while scheduling.");
+        else
+          myApp.alert("Erro ao fazer agendamento.");
+      }
     }
     else
-      myApp.alert("Um ou mais campos foram deixados em branco.");
+    {
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("One or more fields were left blank.");
+      else
+        myApp.alert("Um ou mais campos foram deixados em branco.");
+    }
     mainView.router.back();
     myApp.hidePreloader();
   },500);
@@ -370,12 +410,27 @@ function carregar_agendamentos()
                    '</a>'+
                  '</li>';
 
-      var justificativa = '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+agendamento[i].justificativa+'</div></li>';
-      var vaijus = '<li class="item-content" id="liberg_'+agendamento[i].id+'"><div class="item-input"><input type="text" id="just_'+agendamento[i].id+'" placeholder="Digite aqui a justificativa caso vá cancelar"></div></li>';
+      var justificativa;
+      var vaijus;
+      var btn1;
+      var btn2;
+      if(localStorage.getItem("idioma") == "eng")
+      {
+        justificativa = '<li class="item-content"><div class="item-title">Justification</div><div class="item-after">'+agendamento[i].justificativa+'</div></li>';
+        vaijus = '<li class="item-content" id="liberg_'+agendamento[i].id+'"><div class="item-input"><input type="text" id="just_'+agendamento[i].id+'" placeholder="Enter justification here if you cancel"></div></li>';
+        btn1 = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancel schedule</a></p>';
+        btn2 = '<p id="btn-realizar-'+agendamento[i].id+'"><a onclick="realizar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Perform scheduling</a></p>';
+      }
+      else
+      {
+        justificativa = '<li class="item-content"><div class="item-title">Justificativa</div><div class="item-after">'+agendamento[i].justificativa+'</div></li>';
+        vaijus = '<li class="item-content" id="liberg_'+agendamento[i].id+'"><div class="item-input"><input type="text" id="just_'+agendamento[i].id+'" placeholder="Digite aqui a justificativa caso vá cancelar"></div></li>';
+        btn1 = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar agendamento</a></p>';
+        btn2 = '<p id="btn-realizar-'+agendamento[i].id+'"><a onclick="realizar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Realizar agendamento</a></p>';
+      }
+
       if(agendamento[i].justificativa == null)
         justificativa = "";
-      var btn1 = '<p id="btn-cancelar-'+agendamento[i].id+'"><a onclick="cancelar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-red swipeout-delete">Cancelar agendamento</a></p>';
-      var btn2 = '<p id="btn-realizar-'+agendamento[i].id+'"><a onclick="realizar_agendamento('+agendamento[i].id+',`'+empresa[0].nome_fantasia+'`,`'+usuario_has_endereco[0].nome+'`);" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Realizar agendamento</a></p>';
 
       if((agendamento[i].aceito == 0) && (agendamento[i].realizado == 0))
       {
@@ -418,36 +473,67 @@ function carregar_agendamentos()
       var quantidade = "";
       if(agendamento_has_tipo_lixo.length > 0)
       {
-        quantidade = '<li class="item-content"><div class="item-title">Quantidade média (Kg)</div><div class="item-after">'+agendamento_has_tipo_lixo[0].quantidade+'</div></li>';
+        if(localStorage.getItem("idioma") == "eng")
+          quantidade = '<li class="item-content"><div class="item-title">Average amount (Kg)</div><div class="item-after">'+agendamento_has_tipo_lixo[0].quantidade+'</div></li>';
+        else
+          quantidade = '<li class="item-content"><div class="item-title">Quantidade média (Kg)</div><div class="item-after">'+agendamento_has_tipo_lixo[0].quantidade+'</div></li>';
       }
-
-      document.getElementById("popups-agendamentos").innerHTML += '<div class="popup popup-agendamento-'+agendamento[i].id+'">'+
-                                                                  '<div class="navbar">'+
-                                                                    '<div class="navbar-inner">'+
-                                                                      '<div class="left">'+
-                                                                        '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
-                                                                        '<div id="hd">'+
-                                                                          'Detalhes do agendamento'+
+      if(localStorage.getItem("idioma") == "eng")
+        document.getElementById("popups-agendamentos").innerHTML += '<div class="popup popup-agendamento-'+agendamento[i].id+'">'+
+                                                                    '<div class="navbar">'+
+                                                                      '<div class="navbar-inner">'+
+                                                                        '<div class="left">'+
+                                                                          '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                          '<div id="hd">'+
+                                                                            'Scheduling details'+
+                                                                          '</div>'+
                                                                         '</div>'+
                                                                       '</div>'+
                                                                     '</div>'+
+                                                                  '<div class="content-block">'+
+                                                                    '<div class="list-block">'+
+                                                                      '<ul id="ul-agendamento-'+agendamento[i].id+'">'+
+                                                                        '<li class="item-content"><div class="item-title">Trash types</div><div class="item-after">'+tipos_lixo+'</div></li>'+
+                                                                        quantidade+
+                                                                        '<li class="item-content"><div class="item-title">Company</div><div class="item-after">'+empresa[0].nome_fantasia+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Address</div><div class="item-after">'+usuario_has_endereco[0].nome+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Scheduled date</div><div class="item-after">'+agendamento[i].data_agendamento+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Scheduled time</div><div class="item-after">'+agendamento[i].horario+'</div></li>'+vaijus+
+                                                                        justificativa+
+                                                                      '</ul>'+
+                                                                      btn2+
+                                                                      btn1+
+                                                                    '</div>'+
                                                                   '</div>'+
-                                                                '<div class="content-block">'+
-                                                                  '<div class="list-block">'+
-                                                                    '<ul id="ul-agendamento-'+agendamento[i].id+'">'+
-                                                                      '<li class="item-content"><div class="item-title">Tipos de lixo</div><div class="item-after">'+tipos_lixo+'</div></li>'+
-                                                                      quantidade+
-                                                                      '<li class="item-content"><div class="item-title">Empresa</div><div class="item-after">'+empresa[0].nome_fantasia+'</div></li>'+
-                                                                      '<li class="item-content"><div class="item-title">Endereço</div><div class="item-after">'+usuario_has_endereco[0].nome+'</div></li>'+
-                                                                      '<li class="item-content"><div class="item-title">Data agendada</div><div class="item-after">'+agendamento[i].data_agendamento+'</div></li>'+
-                                                                      '<li class="item-content"><div class="item-title">Horário agendado</div><div class="item-after">'+agendamento[i].horario+'</div></li>'+vaijus+
-                                                                      justificativa+
-                                                                    '</ul>'+
-                                                                    btn2+
-                                                                    btn1+
+                                                                '</div>';
+      else
+        document.getElementById("popups-agendamentos").innerHTML += '<div class="popup popup-agendamento-'+agendamento[i].id+'">'+
+                                                                    '<div class="navbar">'+
+                                                                      '<div class="navbar-inner">'+
+                                                                        '<div class="left">'+
+                                                                          '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                          '<div id="hd">'+
+                                                                            'Detalhes do agendamento'+
+                                                                          '</div>'+
+                                                                        '</div>'+
+                                                                      '</div>'+
+                                                                    '</div>'+
+                                                                  '<div class="content-block">'+
+                                                                    '<div class="list-block">'+
+                                                                      '<ul id="ul-agendamento-'+agendamento[i].id+'">'+
+                                                                        '<li class="item-content"><div class="item-title">Tipos de lixo</div><div class="item-after">'+tipos_lixo+'</div></li>'+
+                                                                        quantidade+
+                                                                        '<li class="item-content"><div class="item-title">Empresa</div><div class="item-after">'+empresa[0].nome_fantasia+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Endereço</div><div class="item-after">'+usuario_has_endereco[0].nome+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Data agendada</div><div class="item-after">'+agendamento[i].data_agendamento+'</div></li>'+
+                                                                        '<li class="item-content"><div class="item-title">Horário agendado</div><div class="item-after">'+agendamento[i].horario+'</div></li>'+vaijus+
+                                                                        justificativa+
+                                                                      '</ul>'+
+                                                                      btn2+
+                                                                      btn1+
+                                                                    '</div>'+
                                                                   '</div>'+
-                                                                '</div>'+
-                                                              '</div>';
+                                                                '</div>';
 
       
     }
@@ -499,7 +585,10 @@ function cancelar_agendamento(id,empresa,endereco)
       $$("#btn-cancelar-"+id).remove();
       $$("#btn-realizar-"+id).remove();
   }else{
-    myApp.alert("Por favor, dê uma justificativa para o cancelamento do agendamento.");
+    if(localStorage.getItem("idioma") == "eng")
+      myApp.alert("Please provide justification for cancellation of the schedule.");
+    else
+      myApp.alert("Por favor, dê uma justificativa para o cancelamento do agendamento.");
   }
 }
 
@@ -514,7 +603,10 @@ function adicionar_endereco()
       if(usuario_has_endereco_id == 0)
       {
         var retorno = ajax_method(false,'endereco.delete',retorno);
-        myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Your address could not be created, please review your information or your connection.");
+        else
+          myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
       }
       else
       {
@@ -523,7 +615,12 @@ function adicionar_endereco()
       }
     }
     else
-      myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+    {
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Your address could not be created, please review your information or your connection.");
+      else
+        myApp.alert("Seu endereco não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+    }
     myApp.hidePreloader();
   },500);
 }
@@ -556,8 +653,38 @@ function carregar_enderecos()
                    '</a>'+
                  '</li>';
       botaum = "seleciona("+usuario_has_endereco[i].id+","+endereco[0].latitude+","+endereco[0].longitude+");"; 
-
-      document.getElementById("popups-enderecos").innerHTML += '<div class="popup popup-endereco-'+usuario_has_endereco[i].id+'">'+
+      if(localStorage.getItem("idioma") == "eng")
+        document.getElementById("popups-enderecos").innerHTML += '<div class="popup popup-endereco-'+usuario_has_endereco[i].id+'">'+
+                                                                  '<div class="navbar">'+
+                                                                    '<div class="navbar-inner">'+
+                                                                      '<div class="left">'+
+                                                                        '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                        '<div id="hd">'+
+                                                                          'Address details'+
+                                                                        '</div>'+
+                                                                      '</div>'+
+                                                                    '</div>'+
+                                                                  '</div>'+
+                                                                '<div class="content-block">'+
+                                                                  '<div class="list-block">'+
+                                                                    '<ul id="ul-endereco-'+usuario_has_endereco[i].id+'">'+
+                                                                      '<li class="item-content"><div class="item-title">Address name</div><div class="item-after">'+usuario_has_endereco[i].nome+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Street</div><div class="item-after">'+endereco[0].rua+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Number</div><div class="item-after">'+endereco[0].num+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Complement</div><div class="item-after">'+endereco[0].complemento+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">State</div><div class="item-after">'+endereco[0].uf+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">City</div><div class="item-after">'+endereco[0].cidade+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Neighborhood</div><div class="item-after">'+endereco[0].bairro+'</div></li>'+
+                                                                      '<li class="item-content"><div class="item-title">Country</div><div class="item-after">'+endereco[0].pais+'</div></li>'+
+                                                                    '</ul>'+
+                                                                    '<div id="bot'+usuario_has_endereco[i].id+'"></div>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`);" href="addendereco.html?id='+usuario_has_endereco[i].endereco_id+'&nome='+usuario_has_endereco[i].nome+'" class="button button-raised button-fill color-orange">Editar</a></p>'+
+                                                                    '<p><a style="width:90%;margin-left:5%;" onclick="myApp.closeModal(`.popup-endereco-'+usuario_has_endereco[i].id+'`); excluir_endereco('+usuario_has_endereco[i].endereco_id+')" class="button button-raised button-fill color-red">Excluir</a></p>'+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</div>';
+      else
+        document.getElementById("popups-enderecos").innerHTML += '<div class="popup popup-endereco-'+usuario_has_endereco[i].id+'">'+
                                                                   '<div class="navbar">'+
                                                                     '<div class="navbar-inner">'+
                                                                       '<div class="left">'+
@@ -588,7 +715,10 @@ function carregar_enderecos()
                                                               '</div>';
     document.getElementById("ulenderecos").innerHTML += html;
     if (localStorage.getItem("lat_padrao")!=endereco[0].latitude && localStorage.getItem("long_padrao")!=endereco[0].longitude)
-      document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+usuario_has_endereco[i].id+','+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
+      if(localStorage.getItem("idioma") == "eng")
+        document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+usuario_has_endereco[i].id+','+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Set as primary</a><p>';
+      else
+        document.getElementById('bot'+usuario_has_endereco[i].id).innerHTML ='<p><a onclick="seleciona('+usuario_has_endereco[i].id+','+endereco[0].latitude+','+endereco[0].longitude+');" style="width:90%;margin-left:5%;" class="button button-raised button-fill color-green">Definir como principal</a><p>';
     }
     myApp.hidePreloader();
   },500);
@@ -610,10 +740,23 @@ function carregar_notificacoes()
         html += '<li class="item-link swipeout">'+
                     '<div class="swipeout-content item-content">';
         if (retorno[i].tipo == 0)
-          html += '<div class="item-media"><i class="fa fa-hourglass-2"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' aceitou o agendamento.</div>';
+        {
+          if(localStorage.getItem("idioma") == "eng")
+            html += '<div class="item-media"><i class="fa fa-hourglass-2"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' accepted the schedule.</div>';
+          else
+            html += '<div class="item-media"><i class="fa fa-hourglass-2"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' aceitou o agendamento.</div>';
+        }
         if (retorno[i].tipo == 1)
-          html += '<div class="item-media"><i class="fa fa-calendar-times-o"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' recusou o agendamento.</div>';
-        html +='</div><div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Excluir</a></div></li>';
+        {
+          if(localStorage.getItem("idioma") == "eng")
+            html += '<div class="item-media"><i class="fa fa-hourglass-2"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' refused the schedule.</div>';
+          else
+            html += '<div class="item-media"><i class="fa fa-calendar-times-o"></i></div><div class="item-inner">'+empresa[0].nome_fantasia+' recusou o agendamento.</div>';
+        }
+        if(localStorage.getItem("idioma") == "eng")
+          html += '</div><div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Excluir</a></div></li>';
+        else
+          html += '</div><div class="swipeout-actions-right"><a onclick="excluir_notificacao('+retorno[i].id+');" class="bg-red swipeout-delete">Delete</a></div></li>';
       }
     }
     document.getElementById('ulnotificacoes').innerHTML = html;
@@ -630,6 +773,34 @@ function carregar_perfil()
     document.getElementById("usuario_nome").value = usuario[0].nome;
     document.getElementById("usuario_email").value = usuario[0].email;
     document.getElementById("usuario_telefone").value = usuario[0].telefone;
+    if(localStorage.getItem("idioma") == "eng")
+      document.getElementById("language").innerHTML = '<a href="#" class="item-link smart-select">'+
+                                                      '<select id="select_language">'+
+                                                        '<option value="pt">Português</option>'+
+                                                        '<option value="eng" selected>English</option>'+
+                                                      '</select>'+
+                                                      '<div class="item-content">'+
+                                                        '<div class="item-media"><i class="fa fa-language"></i></div>'+
+                                                        '<div class="item-inner">'+
+                                                          '<div class="item-title">Language</div>'+
+                                                          '<div class="item-after">English</div>'+
+                                                        '</div>'+
+                                                      '</div>'+
+                                                    '</a>';
+    else
+      document.getElementById("language").innerHTML = '<a href="#" class="item-link smart-select">'+
+                                                        '<select id="select_language">'+
+                                                          '<option value="pt" selected>Português</option>'+
+                                                          '<option value="eng">English</option>'+
+                                                        '</select>'+
+                                                        '<div class="item-content">'+
+                                                          '<div class="item-media"><i class="fa fa-language"></i></div>'+
+                                                          '<div class="item-inner">'+
+                                                            '<div class="item-title">Idioma</div>'+
+                                                            '<div class="item-after">Português</div>'+
+                                                          '</div>'+
+                                                        '</div>'+
+                                                      '</a>';
     myApp.hidePreloader();
   },100);
 }
@@ -641,9 +812,20 @@ function alterar_perfil()
     var json_dados = ajax_method(false,'usuario.update_perfil',localStorage.getItem("login_id"),document.getElementById("usuario_nome").value,document.getElementById("usuario_email").value,document.getElementById("usuario_telefone").value);
     var retorno = JSON.parse(json_dados);
     if(retorno)
-      myApp.alert("Perfil alterado com sucesso.");
+    {
+      localStorage.setItem("idioma",document.getElementById("select_language").value);
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Profile altered successfully.");
+      else
+        myApp.alert("Perfil alterado com sucesso.");
+    }
     else
-      myApp.alert("Erro ao alterar perfil.");
+    {
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Error while changing profile.");
+      else
+        myApp.alert("Erro ao alterar perfil.");
+    }
   myApp.hidePreloader();
   },100);
 
@@ -659,24 +841,79 @@ function alterar_senha()
       var retorno = JSON.parse(json_dados);
       if(retorno)
       {
-        myApp.alert("Senha alterada com sucesso.");
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Password changed successfully.");
+        else
+          myApp.alert("Senha alterada com sucesso.");
         mainView.router.loadPage('perfil.html');
       }
       else
-        myApp.alert("Erro ao alterar senha.");
+      {
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Error changing password.");
+        else
+          myApp.alert("Erro ao alterar senha.");
+      }
     }
     else
-      myApp.alert("Senhas não coincidem.");
+    {
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Passwords do not match.");
+      else
+        myApp.alert("Senhas não coincidem.");
+    }
   }
   else
   {
-    myApp.alert("Um ou mais campos foram deixados em branco.");
+    if(localStorage.getItem("idioma") == "eng")
+      myApp.alert("One or more fields were left blank.");
+    else
+      myApp.alert("Um ou mais campos foram deixados em branco.");
   }
 }
 
 function criar_menu()
 {
-  var panel_html = '<li><a href="perfil.html" class="item-link">'+
+  var panel_html;
+  if(localStorage.getItem("idioma") == "eng")
+    panel_html = '<li><a href="perfil.html" class="item-link">'+
+                        '<div class="item-content">' +
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Profile</div>'+
+                          '</div>'+
+                       ' </div></a></li>'+
+                      '<li><a href="agendamentos.html" class="item-link">'+
+                        '<div class="item-content"> '+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Schedules</div>'+
+                          '</div>'+
+                        '</div></a></li>'+
+                    '<li><a href="enderecos.html" class="item-link">'+
+                        '<div class="item-content"> '+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Address</div>'+
+                          '</div>'+
+                        '</div></a></li>'+
+                    '<li><a href="notificacoes.html" class="item-link">'+
+                        '<div class="item-content"> '+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Notifications</div>'+
+                          '</div>'+
+                        '</div></a></li>'+
+                    '<li><a href="sobre.html" class="item-link" onclick="myApp.closePanel();">'+
+                      '<div class="item-content">'+
+                        '<div class="item-inner"> '+
+                          '<div class="item-title">About</div>'+
+                        '</div>'+
+                      '</div></a></li>'+
+                    '<li><a href="#" class="item-link" onclick="logout();">'+
+                        '<div class="item-content"> '+
+                          '<div class="item-inner">'+
+                            '<div class="item-title">Logout</div>'+
+                          '</div>'+
+                        '</div></a></li>';
+  else
+    panel_html = '<li><a href="perfil.html" class="item-link">'+
                         '<div class="item-content">' +
                           '<div class="item-inner">'+
                             '<div class="item-title">Perfil</div>'+
@@ -729,7 +966,8 @@ function mostrar_tela_mapa()
 function mostrar_tela_login()
 {
   $$("#ba").hide();
-  document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
+  if(localStorage.getItem("idioma") == "eng")
+    document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
                                                       '<div class="page-content login-screen-content">'+
                                                         '<div class="login-screen-title"><img src="img/login.png" width="90%" height="5%"></div>'+
                                                           '<div class="list-block">'+
@@ -738,7 +976,7 @@ function mostrar_tela_login()
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Email</div>'+
                                                                     '<div class="item-input">'+
-                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@servidor.com" required>'+
+                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: jhon@server.com" required>'+
                                                                     '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
@@ -746,7 +984,7 @@ function mostrar_tela_login()
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Senha</div>'+
                                                                     '<div class="item-input">'+
-                                                                      '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
+                                                                      '<input type="password" name="login_senha" id="login_senha" placeholder="Ex: *******" required>'+
                                                                     '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
@@ -754,17 +992,49 @@ function mostrar_tela_login()
                                                           '</div>'+
                                                           '<div class="list-block-label" style="padding-left:15px;padding-right:15px;">'+
                                                               '<p><a onclick="login();" class="button">Entrar</a></p>'+
-                                                              '<p><a href="cadastro.html" class="button">Não possui cadastro? Clique aqui!</a></p>'+
+                                                              '<p><a href="cadastro.html" class="button">No account yet? Click here!</a></p>'+
                                                           '</div>'+
                                                         '</div>'+
                                                       '</div>'+
                                                       '</div>'+
                                                     '</div>';
+  else
+    document.getElementById("index_page").innerHTML = '<div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">'+
+                                                        '<div class="page-content login-screen-content">'+
+                                                          '<div class="login-screen-title"><img src="img/login.png" width="90%" height="5%"></div>'+
+                                                            '<div class="list-block">'+
+                                                              '<ul>'+
+                                                                '<li class="item-content">'+
+                                                                  '<div class="item-inner">'+
+                                                                    '<div class="item-title label">Email</div>'+
+                                                                      '<div class="item-input">'+
+                                                                        '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@servidor.com" required>'+
+                                                                      '</div>'+
+                                                                  '</div>'+
+                                                                '</li>'+
+                                                                '<li class="item-content">'+
+                                                                  '<div class="item-inner">'+
+                                                                    '<div class="item-title label">Senha</div>'+
+                                                                      '<div class="item-input">'+
+                                                                        '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
+                                                                      '</div>'+
+                                                                  '</div>'+
+                                                                '</li>'+
+                                                              '</ul>'+
+                                                            '</div>'+
+                                                            '<div class="list-block-label" style="padding-left:15px;padding-right:15px;">'+
+                                                                '<p><a onclick="login();" class="button">Entrar</a></p>'+
+                                                                '<p><a href="cadastro.html" class="button">Não possui cadastro? Clique aqui!</a></p>'+
+                                                            '</div>'+
+                                                          '</div>'+
+                                                        '</div>'+
+                                                        '</div>'+
+                                                      '</div>';
 }
 
 function remover_menu()
 {
-  document.getElementById("local_panel").innerHTML = '<p>Você não realizou o login!</p>';
+  document.getElementById("local_panel").innerHTML = '<p></p>';
 }
 
 function login()
@@ -788,7 +1058,10 @@ function login()
     }
     else
     {
-      myApp.alert('Email ou senha não correspondem!');
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Email or password does not match!");
+      else
+        myApp.alert("Email ou senha não correspondem!");
     }
     myApp.hidePreloader();
     mainView.refreshPage();
@@ -796,38 +1069,72 @@ function login()
 }
 
 function cria_login(){
-  document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
-                                               ' <div class="left">'+
-                                                  '<a href="#" class="link icon-only" onclick="pan();" id="bc"> <i class="icon icon-bars"></i></a>'+
-                                                  '<div id="hd">'+
-                                                   ' DescartesLab'+
-                                                 ' </div>'+
-                                               ' </div>'+
-                                               ' <div id="hc" class="hi" style="width:100%;">'+
-                                                  '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
-                                                   ' <div class="searchbar-input">'+
-                                                     ' <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">'+
+  if(localStorage.getItem("idioma") == "eng")
+    document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
+                                                 ' <div class="left">'+
+                                                    '<a href="#" class="link icon-only" onclick="pan();" id="bc"> <i class="icon icon-bars"></i></a>'+
+                                                    '<div id="hd">'+
+                                                     ' DescartesLab'+
                                                    ' </div>'+
-                                                    '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancelar</a>'+
-                                                  '</form>'+
-                                                '</div>'+
-                                                '<div class="center">'+
-                                                  '<div onclick="cancela_rota();" id="hb" class="hi">'+
-                                                   ' Apagar Rota <i class="fa fa-remove"></i>'+
+                                                 ' </div>'+
+                                                 ' <div id="hc" class="hi" style="width:100%;">'+
+                                                    '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
+                                                     ' <div class="searchbar-input">'+
+                                                       ' <input id="pac-input" class="controls" type="search" placeholder="Location" data-tap-disabled="true">'+
+                                                     ' </div>'+
+                                                      '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancel</a>'+
+                                                    '</form>'+
                                                   '</div>'+
-                                                '</div>'+
-                                                '<div class="right" style="margin-left: 0 !important">'+
-                                                  '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
-                                                    '<i class="fa fa-filter"></i>'+
-                                                 ' </a>'+
-                                                  '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
-                                                   ' <i class="fa fa-refresh"></i>'+
-                                                  '</a>'+
-                                                 ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
-                                                      '<i class="fa fa-search" id="loc"></i>'+
-                                                  '</a>'+
-                                               ' </div>'+
-                                              '</div>';
+                                                  '<div class="center">'+
+                                                    '<div onclick="cancela_rota();" id="hb" class="hi">'+
+                                                     ' Delete route <i class="fa fa-remove"></i>'+
+                                                    '</div>'+
+                                                  '</div>'+
+                                                  '<div class="right" style="margin-left: 0 !important">'+
+                                                    '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
+                                                      '<i class="fa fa-filter"></i>'+
+                                                   ' </a>'+
+                                                    '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
+                                                     ' <i class="fa fa-refresh"></i>'+
+                                                    '</a>'+
+                                                   ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
+                                                        '<i class="fa fa-search" id="loc"></i>'+
+                                                    '</a>'+
+                                                 ' </div>'+
+                                                '</div>';
+  else
+    document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
+                                                 ' <div class="left">'+
+                                                    '<a href="#" class="link icon-only" onclick="pan();" id="bc"> <i class="icon icon-bars"></i></a>'+
+                                                    '<div id="hd">'+
+                                                     ' DescartesLab'+
+                                                   ' </div>'+
+                                                 ' </div>'+
+                                                 ' <div id="hc" class="hi" style="width:100%;">'+
+                                                    '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
+                                                     ' <div class="searchbar-input">'+
+                                                       ' <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">'+
+                                                     ' </div>'+
+                                                      '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancelar</a>'+
+                                                    '</form>'+
+                                                  '</div>'+
+                                                  '<div class="center">'+
+                                                    '<div onclick="cancela_rota();" id="hb" class="hi">'+
+                                                     ' Apagar rota <i class="fa fa-remove"></i>'+
+                                                    '</div>'+
+                                                  '</div>'+
+                                                  '<div class="right" style="margin-left: 0 !important">'+
+                                                    '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
+                                                      '<i class="fa fa-filter"></i>'+
+                                                   ' </a>'+
+                                                    '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
+                                                     ' <i class="fa fa-refresh"></i>'+
+                                                    '</a>'+
+                                                   ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
+                                                        '<i class="fa fa-search" id="loc"></i>'+
+                                                    '</a>'+
+                                                 ' </div>'+
+                                                '</div>';
 }
 
 function logout()
@@ -893,57 +1200,109 @@ function select_pontos()
             }
         }
         json_dados = ajax_method(false,'endereco.select_by_id',ponto[i].endereco_id);
-        document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
-                                                          '<div class="navbar">'+
-                                                            '<div class="navbar-inner">'+
-                                                              '<div class="left">'+
-                                                                '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
-                                                                '<div id="hd">'+
-                                                                  'Tipos de lixo do ponto'+
+        if(localStorage.getItem("idioma") == "eng")
+          document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
+                                                            '<div class="navbar">'+
+                                                              '<div class="navbar-inner">'+
+                                                                '<div class="left">'+
+                                                                  '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                  '<div id="hd">'+
+                                                                    'Trash types of point'+
+                                                                  '</div>'+
                                                                 '</div>'+
                                                               '</div>'+
                                                             '</div>'+
+                                                          '<div class="content-block">'+
+                                                            '<div class="list-block">'+
+                                                              '<ul>'+
+                                                                tipos_lixo+
+                                                              '</ul>'+
+                                                            '</div>'+
                                                           '</div>'+
-                                                        '<div class="content-block">'+
-                                                          '<div class="list-block">'+
-                                                            '<ul>'+
-                                                              tipos_lixo+
-                                                            '</ul>'+
+                                                        '</div>';
+        else
+          document.getElementById("popups").innerHTML += '<div class="popup popup-ponto_'+ponto[i].id+'">'+
+                                                            '<div class="navbar">'+
+                                                              '<div class="navbar-inner">'+
+                                                                '<div class="left">'+
+                                                                  '<a href="#" class="link icon-only close-popup" id="bc"><i class="icon icon-back"></i></a>'+
+                                                                  '<div id="hd">'+
+                                                                    'Tipos de lixo do ponto'+
+                                                                  '</div>'+
+                                                                '</div>'+
+                                                              '</div>'+
+                                                            '</div>'+
+                                                          '<div class="content-block">'+
+                                                            '<div class="list-block">'+
+                                                              '<ul>'+
+                                                                tipos_lixo+
+                                                              '</ul>'+
+                                                            '</div>'+
                                                           '</div>'+
-                                                        '</div>'+
-                                                      '</div>';
+                                                        '</div>';
         var endereco = JSON.parse(json_dados);
         json_dados = ajax_method(false,'empresa.select_by_id',ponto[i].empresa_id);
         var empresa = JSON.parse(json_dados);
         var features = [];
         features["type"] = "mark1";
         features["position"] = new google.maps.LatLng(endereco[0].latitude,endereco[0].longitude);
-        features["info"] = '<div class="list-block">'+
+        if(localStorage.getItem("idioma") == "eng")
+          features["info"] = '<div class="list-block">'+
                              '<ul>'+
                                 '<li><div class="item-content"><div class="item-title">'+empresa[0].nome_fantasia+'</div></div></li>'+
                                 '<li>'+
                                   '<a href="#" class="item-link open-popup" data-popup=".popup-ponto_'+ponto[i].id+'">'+
                                     '<div class="item-content">' +
                                       '<div class="item-inner">'+
-                                        '<div class="item-title">Ver tipos de lixo</div>'+
+                                        '<div class="item-title">View trash types</div>'+
                                       '</div>'+
                                    '</div>'+
                                    '</a>'+
                                  '</li>'+
                                 '<li><div class="item-content"><div class="item-title">'+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div></div></li>'+
                             '</ul>';
+        else
+          features["info"] = '<div class="list-block">'+
+                               '<ul>'+
+                                  '<li><div class="item-content"><div class="item-title">'+empresa[0].nome_fantasia+'</div></div></li>'+
+                                  '<li>'+
+                                    '<a href="#" class="item-link open-popup" data-popup=".popup-ponto_'+ponto[i].id+'">'+
+                                      '<div class="item-content">' +
+                                        '<div class="item-inner">'+
+                                          '<div class="item-title">Ver tipos de lixo</div>'+
+                                        '</div>'+
+                                     '</div>'+
+                                     '</a>'+
+                                   '</li>'+
+                                  '<li><div class="item-content"><div class="item-title">'+ponto[i].atendimento_ini+' - '+ponto[i].atendimento_fim+'</div></div></li>'+
+                              '</ul>';
         if(empresa[0].agendamento == 1)
         {
-          features["info"] += '<p class="buttons-row">'+
-                                  '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
+          if(localStorage.getItem("idioma") == "eng")
+            features["info"] += '<p class="buttons-row">'+
+                                  '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Schedule your collection</a>'+
                               '</p>';
+          else
+            features["info"] += '<p class="buttons-row">'+
+                                    '<a href="agendar.html" onclick="empresa_id='+ponto[i].empresa_id+';ponto_id='+ponto[i].id+'" style="width:100%" class="button button-raised button-fill color-green">Agende sua coleta</a>'+
+                                '</p>';
         }
-                             
+        if(localStorage.getItem("idioma") == "eng")
+        {
           features["info"] +='<p class="buttons-row">'+
                                '<a href="#" style="width:100%" class="button button-raised button-fill color-blue" onclick ="calculateAndDisplayRoute'+
                                '('+endereco[0].latitude+','+endereco[0].longitude+')">Criar rota</a>'+
                              '</p>'
                            '</div>';
+        }
+        else
+        {
+          features["info"] +='<p class="buttons-row">'+
+                               '<a href="#" style="width:100%" class="button button-raised button-fill color-blue" onclick ="calculateAndDisplayRoute'+
+                               '('+endereco[0].latitude+','+endereco[0].longitude+')">Create route</a>'+
+                             '</p>'
+                           '</div>';
+        }
         features["draggable"] = false;
         addMarker(features);
       }
@@ -951,7 +1310,10 @@ function select_pontos()
     markerCluster = new MarkerClusterer(map, markers, options); 
   }
   else{
-    myApp.alert("Não pudemos carregar os pontos próximos a você pois você ainda não adicionou ou definiu um endereço como principal. Por favor faça-o.")
+    if(localStorage.getItem("idioma") == "eng")
+      myApp.alert("We could not load points near you because you have not yet added or set an address as the primary. Please do it.");
+    else
+      myApp.alert("Não pudemos carregar os pontos próximos a você pois você ainda não adicionou ou definiu um endereço como principal. Por favor faça-o.");
   }
 }
 
@@ -959,7 +1321,11 @@ function mostrar_enderecos()
 {
   var json_dados = ajax_method(false,'usuario_has_endereco.select','usuario_id = '+localStorage.getItem("login_id"));
   var usuario_has_endereco = JSON.parse(json_dados);
-  var html = "<option value='0' selected>Nada selecionado</option>";
+  var html;
+  if(localStorage.getItem("idioma") == "eng")
+    html = "<option value='0' selected>Nothing selected</option>";
+  else
+    html = "<option value='0' selected>Nada selecionado</option>";
 
   for(var i=0;i<usuario_has_endereco.length;i++)
     html += '<option value='+usuario_has_endereco[i].endereco_id+'>'+usuario_has_endereco[i].nome+'</option>';
@@ -996,17 +1362,32 @@ function criar_popover()
   var tipo_lixo = JSON.parse(json_dados);
 
   for(var i=0;i<tipo_lixo.length;i++)
-    html += '<li>'+
-              '<label class="label-checkbox item-content">'+
-                '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'" name="tipo_lixo_'+tipo_lixo[i].id+'" value='+tipo_lixo[i].id+'>'+
-                '<div class="item-media">'+
-                  '<i class="icon icon-form-checkbox"></i>'+
-                '</div>'+
-                '<div class="item-inner">'+
-                  '<div class="item-title">'+tipo_lixo[i].nome+'</div>'+
-                '</div>'+
-              '</label>'+
-            '</li>';
+  {
+    if(localStorage.getItem("idioma") == "eng")
+      html += '<li>'+
+                '<label class="label-checkbox item-content">'+
+                  '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'" name="tipo_lixo_'+tipo_lixo[i].id+'" value='+tipo_lixo[i].id+'>'+
+                  '<div class="item-media">'+
+                    '<i class="icon icon-form-checkbox"></i>'+
+                  '</div>'+
+                  '<div class="item-inner">'+
+                    '<div class="item-title">'+tipo_lixo[i].nome_eng+'</div>'+
+                  '</div>'+
+                '</label>'+
+              '</li>';
+    else
+      html += '<li>'+
+                '<label class="label-checkbox item-content">'+
+                  '<input type="checkbox" id="tipo_lixo_'+tipo_lixo[i].id+'" name="tipo_lixo_'+tipo_lixo[i].id+'" value='+tipo_lixo[i].id+'>'+
+                  '<div class="item-media">'+
+                    '<i class="icon icon-form-checkbox"></i>'+
+                  '</div>'+
+                  '<div class="item-inner">'+
+                    '<div class="item-title">'+tipo_lixo[i].nome+'</div>'+
+                  '</div>'+
+                '</label>'+
+              '</li>';
+  }
   component.innerHTML = html;
 }
 
@@ -1066,7 +1447,10 @@ function codeAddress() {
             document.getElementById( 'long' ).value = results[0].geometry.location.lng();
             adicionar_endereco();
         } else {
-            myApp.alert( 'Não podemos encontrar sua localização corretamente, por favor, reveja os dados.');
+          if(localStorage.getItem("idioma") == "eng")
+            myApp.alert("We can not find your location correctly, please review the data.");
+          else
+            myApp.alert("Não podemos encontrar sua localização corretamente, por favor, reveja os dados.");
         }
     } );
 }
@@ -1079,7 +1463,10 @@ function codeAddressa() {
             document.getElementById( 'long' ).value = results[0].geometry.location.lng();
             editar_endereco();
         } else {
-            myApp.alert( 'Não podemos encontrar sua localização corretamente, por favor, reveja os dados.');
+          if(localStorage.getItem("idioma") == "eng")
+            myApp.alert("We can not find your location correctly, please review the data.");
+          else
+            myApp.alert("Não podemos encontrar sua localização corretamente, por favor, reveja os dados.");
         }
     } );
 }
@@ -1096,14 +1483,27 @@ function cadastro()
       {
         localStorage.setItem("login_id",adduser);
         mainView.router.back();
-        myApp.alert("Cadastro realizado com êxiito! Faça o login para continuar.");
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Successful registration! Log in to continue.");
+        else
+          myApp.alert("Cadastro realizado com êxito! Faça o login para continuar.");
       }
       else
-        myApp.alert("Seu perfil não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+      {
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Your profile could not be created, please review your information or your connection.");
+        else
+          myApp.alert("Seu perfil não pôde ser criado, reveja suas informações ou sua conexão por favor.");
+      }
     },500);
   }
   else
-    myApp.alert("Senhas não correspondem!");
+  {
+    if(localStorage.getItem("idioma") == "eng")
+      myApp.alert("Passwords do not match!");
+    else
+      myApp.alert("Senhas não correspondem!");
+  }
 }
 
 function seleciona(id,lat,long)
@@ -1153,7 +1553,12 @@ function editar_endereco()
          carregar_enderecos();
       }
       else
-        myApp.alert("Não foi possível editar seu endereço, por favor, reveja sua conexão ou dados.")
+      {
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Your address could not be edited, please review your connection or data.");
+        else
+          myApp.alert("Não foi possível editar seu endereço, por favor, reveja sua conexão ou dados.");
+      }
       myApp.hidePreloader();
     },500);
 }
@@ -1165,7 +1570,10 @@ function excluir_endereco(id)
     var json_dados = ajax_method(false,'endereco.delete',id);
     if (!json_dados)
     {
-      myApp.alert("Não foi possível excluir seu endereço. Por favor, reveja sua conexão.");
+      if(localStorage.getItem("idioma") == "eng")
+        myApp.alert("Your address could not be deleted. Please review your connection.");
+      else
+        myApp.alert("Não foi possível excluir seu endereço. Por favor, reveja sua conexão.");
     }
     else
     {
@@ -1182,7 +1590,10 @@ function excluir_notificacao(id)
       if (json_dados) {
       }
       else{
-        myApp.alert("Não foi possível excluir sua notificação, por favor, reveja sua conexão.");
+        if(localStorage.getItem("idioma") == "eng")
+          myApp.alert("Your notification could not be deleted, please review your connection.");
+        else
+          myApp.alert("Não foi possível excluir sua notificação, por favor, reveja sua conexão.");
       }
     },500);
 }
@@ -1200,4 +1611,204 @@ function obter_select(select) {
     }
   }
   return resultado;
+}
+
+function traduzir(page)
+{
+  if(localStorage.getItem("idioma") == "pt")
+  {
+    if(page == "addendereco")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Cadastrar endereço";
+
+      document.getElementById("nome").placeholder = "Nome do endereço";
+      document.getElementById("rua").placeholder = "Rua";
+      document.getElementById("numero").placeholder = "Número";
+      document.getElementById("complemento").placeholder = "Complemento";
+      document.getElementById("cep").placeholder = "CEP";
+      document.getElementById("bairro").placeholder = "Bairro";
+      document.getElementById("estado").placeholder = "Estado";
+      document.getElementById("cidade").placeholder = "Cidade";
+      document.getElementById("pais").placeholder = "País";
+    }
+    else if(page == "agendamentos")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Agendamentos";
+
+      document.getElementById(page+"_espera").innerHTML = "Em espera";
+      document.getElementById(page+"_aceitos").innerHTML = "Aceitos";
+      document.getElementById(page+"_atrasados").innerHTML = "Atrasados";
+      document.getElementById(page+"_realizados").innerHTML = "Realizados";
+      document.getElementById(page+"_cancelados").innerHTML = "Cancelados";
+    }
+    else if(page == "agendar")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Agendar coleta";
+
+      document.getElementById("data_agendamento").placeholder = "Data da coleta";
+      document.getElementById("horario_agendamento").placeholder = "Horário da coleta";
+      document.getElementById("quantidade_agendamento").placeholder = "Quantidade média (em Kg)";
+      document.getElementById("agendar_nada_selecionado").innerHTML = "Nada selecionado";
+      document.getElementById("agendar_endereco").innerHTML = "Endereço";
+      document.getElementById("agendar_nada_selecionado1").innerHTML = "Nada selecionado";
+      document.getElementById("agendar_tipo_lixo").innerHTML = "Tipos de lixo";
+      document.getElementById("agendar_cancelar").innerHTML = "Cancelar";
+      document.getElementById("agendar_agendar").innerHTML = "Agendar";
+    }
+    else if(page == "altsenha")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Alterar Senha";
+
+      document.getElementById("usuario_senha_antiga").placeholder = "Senha atual";
+      document.getElementById("usuario_senha1").placeholder = "Nova senha";
+      document.getElementById("usuario_senha2").placeholder = "Repita a senha";
+      document.getElementById("altsenha_cancelar").innerHTML = "Cancelar";
+      document.getElementById("altsenha_salvar").innerHTML = "Salvar";
+    }
+    else if(page == "cadastro")
+    {
+      document.getElementById("cadastro_nome").innerHTML = "Nome";
+      document.getElementById("cad_nome").placeholder = "Ex: João da Silva";
+      document.getElementById("cad_email").placeholder = "Ex: joão@servidor.com";
+      document.getElementById("cadastro_senha").innerHTML = "Senha";
+      document.getElementById("cad_senha").placeholder = "Ex: *******";
+      document.getElementById("cadastro_senha_novamente").innerHTML = "Senha novamente";
+      document.getElementById("cad_senha2").placeholder = "Ex: *******";
+      document.getElementById("cad_cpf").placeholder = "ex: 12345678911";document.getElementById("cadastro_nome").innerHTML = "";
+      document.getElementById("cadastro_telefone").innerHTML = "Telefone";
+      document.getElementById("cad_telefone").placeholder = "Ex: 554995965584";
+      document.getElementById("cadastro_cadastrar").innerHTML = "Cadastrar";
+      document.getElementById("cadastro_login").innerHTML = "Já possui cadastro? Clique aqui!";
+    }
+    else if(page == "enderecos")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Endereços";
+    }
+    else if(page == "index")
+    {
+      document.getElementById("index_filtros").innerHTML = "Filters";
+    }
+    else if(page == "notificacoes")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Notificações";
+    }
+    else if(page == "perfil")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Perfil";
+
+      document.getElementById("usuario_nome").placeholder = "Seu nome";
+      document.getElementById("usuario_telefone").placeholder = "Telefone";
+      document.getElementById("perfil_salvar").innerHTML = "Salvar";
+      document.getElementById("perfil_alterar_senha").innerHTML = "Alterar senha";
+    }
+    else if(page == "sobre")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Sobre";
+
+      document.getElementById("sobre_descricao").innerHTML = "Desenvolvido pela equipe que representa Santa Catarina no desafio por equipe, na área de Tecnologia da Informação e Comunicação na Olimpíada do Conhecimento 2016.";
+      document.getElementById("sobre_membros").innerHTML = "Membros da equipe";
+      document.getElementById("sobre_solucoes").innerHTML = "Soluções de softwares para negócios";
+      document.getElementById("sobre_infra").innerHTML = "Infraestrutura e redes locais";
+      document.getElementById("sobre_solucoes1").innerHTML = "Soluções de softwares para negócios";
+      document.getElementById("sobre_gestor").innerHTML = "Gestor do projeto";
+    }
+  }
+  else
+  {
+    if(page == "addendereco")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Create new address";
+
+      document.getElementById("nome").placeholder = "Address name";
+      document.getElementById("rua").placeholder = "Street";
+      document.getElementById("numero").placeholder = "Number";
+      document.getElementById("complemento").placeholder = "Complement";
+      document.getElementById("cep").placeholder = "Postal Code";
+      document.getElementById("bairro").placeholder = "Neighbourhood";
+      document.getElementById("estado").placeholder = "State";
+      document.getElementById("cidade").placeholder = "City";
+      document.getElementById("pais").placeholder = "Country";
+    }
+    else if(page == "agendamentos")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Schedulings";
+
+      document.getElementById(page+"_espera").innerHTML = "Waiting";
+      document.getElementById(page+"_aceitos").innerHTML = "Accepted";
+      document.getElementById(page+"_atrasados").innerHTML = "Late";
+      document.getElementById(page+"_realizados").innerHTML = "Accomplished";
+      document.getElementById(page+"_cancelados").innerHTML = "Canceled";
+    }
+    else if(page == "agendar")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Schedule pickup";
+
+      document.getElementById("data_agendamento").placeholder = "Pickup date";
+      document.getElementById("horario_agendamento").placeholder = "Pickup time";
+      document.getElementById("quantidade_agendamento").placeholder = "Amount of trash to be picked (Kg)";
+      document.getElementById("agendar_nada_selecionado").innerHTML = "Nothing selected";
+      document.getElementById("agendar_endereco").innerHTML = "Endereço";
+      document.getElementById("agendar_nada_selecionado1").innerHTML = "Nothing selected";
+      document.getElementById("agendar_tipo_lixo").innerHTML = "Trash type";
+      document.getElementById("agendar_cancelar").innerHTML = "Cancel";
+      document.getElementById("agendar_agendar").innerHTML = "Confirm";
+    }
+    else if(page == "altsenha")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Password update";
+
+      document.getElementById("usuario_senha_antiga").placeholder = "Atual password";
+      document.getElementById("usuario_senha1").placeholder = "New password";
+      document.getElementById("usuario_senha2").placeholder = "Repeat the password";
+      document.getElementById("altsenha_cancelar").innerHTML = "Cancel";
+      document.getElementById("altsenha_salvar").innerHTML = "Save";
+    }
+    else if(page == "cadastro")
+    {
+      document.getElementById("cadastro_nome").innerHTML = "Name";
+      document.getElementById("cad_nome").placeholder = "Ex: Jhon Titor";
+      document.getElementById("cad_email").placeholder = "Ex: jhon@server.com";
+      document.getElementById("cadastro_senha").innerHTML = "Password";
+      document.getElementById("cad_senha").placeholder = "Ex: *******";
+      document.getElementById("cadastro_senha_novamente").innerHTML = "Password again";
+      document.getElementById("cad_senha2").placeholder = "Ex: *******";
+      document.getElementById("cad_cpf").placeholder = "ex: 12345678911";document.getElementById("cadastro_nome").innerHTML = "";
+      document.getElementById("cadastro_telefone").innerHTML = "Telephone";
+      document.getElementById("cad_telefone").placeholder = "Ex: 554995965584";
+      document.getElementById("cadastro_cadastrar").innerHTML = "Register";
+      document.getElementById("cadastro_login").innerHTML = "Already resgistered? Click here!";
+    }
+    else if(page == "enderecos")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Addresses";
+    }
+    else if(page == "index")
+    {
+      document.getElementById("index_filtros").innerHTML = "Filters";
+    }
+    else if(page == "notificacoes")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Notifications";
+    }
+    else if(page == "perfil")
+    {
+      document.getElementById(page+"_nav").innerHTML = "Profile";
+
+      document.getElementById("usuario_nome").placeholder = "Your name";
+      document.getElementById("usuario_telefone").placeholder = "Telephone";
+      document.getElementById("perfil_salvar").innerHTML = "Save";
+      document.getElementById("perfil_alterar_senha").innerHTML = "Password update";
+    }
+    else if(page == "sobre")
+    {
+      document.getElementById(page+"_nav").innerHTML = "About";
+
+      document.getElementById("sobre_descricao").innerHTML = "Developed by the team that represents Santa Catarina in the team challenge, in the area of ​​Information and Communication Technology at the 2016 Olimpíada do Conhecimento.";
+      document.getElementById("sobre_membros").innerHTML = "Team members";
+      document.getElementById("sobre_solucoes").innerHTML = "Business Software Solutions";
+      document.getElementById("sobre_infra").innerHTML = "Infrastructure and local area networks";
+      document.getElementById("sobre_solucoes1").innerHTML = "Business Software Solutions";
+      document.getElementById("sobre_gestor").innerHTML = "Project manager";
+    }
+  }
 }
