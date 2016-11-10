@@ -3,7 +3,7 @@
       <div class="left">
         <a href="#" class="link back">
                 <i class="icon icon-back"></i>
-                <span>Voltar</span>
+                <span id="agendar_nav">Voltar</span>
         </a>
       </div>
     </div>
@@ -53,7 +53,7 @@
               <div class="item-inner" style="padding: 0 !important;">
                 <a href="#" class="item-link smart-select" style="width:100%">
                   <select id="endereco_id_agendamento">
-                    <option selected>Selecione o endereço</option>
+                    <option selected id="agendar_selecione">Selecione o endereço</option>
                   </select>
                   <div class="item-content">
                     <div class="item-inner">
@@ -71,7 +71,7 @@
               <div class="item-inner" style="padding: 0 !important;">
                 <a href="#" class="item-link smart-select"  style="width:100%">
                   <select id="tipos_lixo_agendamento" multiple>
-                    <option selected>Tipo de lixo</option>
+                    <option selected id="agendar_tipo_lixo">Tipo de lixo</option>
                   </select>
                   <div class="item-content">
                     <div class="item-inner">
@@ -87,10 +87,10 @@
         <p class="buttons-row">
           <div class="row" style="width:90%;margin-left:5%;">
             <div class="col-50">
-              <a href="#" style="width:auto" class="button button-raised button-fill color-red back">Cancelar</a>
+              <a href="#" style="width:auto" class="button button-raised button-fill color-red back" id="agendar_cancelar">Cancelar</a>
             </div>
             <div class="col-50">
-              <a style="width:100%" onclick="criar_agendamento();" class="button button-raised button-fill color-blue">Agendar</a>
+              <a style="width:100%" onclick="criar_agendamento();" class="button button-raised button-fill color-blue" id="agendar_agendar">Agendar</a>
             </div>
           </div>
         </p>
