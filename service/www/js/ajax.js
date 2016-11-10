@@ -274,7 +274,6 @@ function inicializar()
 
     if(localStorage.getItem("idioma") == null)
       localStorage.setItem("idioma","pt");
-
   }).trigger();
   myApp.init();
   if(localStorage.getItem("login_id") != null)
@@ -282,6 +281,7 @@ function inicializar()
     inicializar_map();
     mapa_refresh();
   }
+  traduzir("index");
   //localStorage.removeItem("tutorial");
 }
 
@@ -1195,7 +1195,10 @@ function select_pontos()
           for(var h=0;h<tipo_lixo_has_ponto.length;h++)
             if(!add && (tipo_lixo[j].id == tipo_lixo_has_ponto[h].tipo_lixo_id))
             {
-              tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome+'</div></li>';
+              if(localStorage.getItem("idioma") == "eng")
+                tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome_eng+'</div></li>';
+              else
+                tipos_lixo += '<li class="item-content"><div class="item-title">'+tipo_lixo[j].nome+'</div></li>';
               add = true;
             }
         }
@@ -1346,7 +1349,10 @@ function criar_tipos_lixo()
     for(var h=0;h<tipo_lixo_has_ponto.length;h++)
       if(!add && (tipo_lixo[i].id == tipo_lixo_has_ponto[h].tipo_lixo_id))
       {
-        html += '<option value='+tipo_lixo[i].id+'>'+tipo_lixo[i].nome+'</option>';
+        if(localStorage.getItem("idioma") == "eng")
+          html += '<option value='+tipo_lixo[i].id+'>'+tipo_lixo[i].nome_eng+'</option>';
+        else
+          html += '<option value='+tipo_lixo[i].id+'>'+tipo_lixo[i].nome+'</option>';
         add = true;
       }
   }
@@ -1617,9 +1623,27 @@ function traduzir(page)
 {
   if(localStorage.getItem("idioma") == "pt")
   {
+    myApp = new Framework7({
+      pushState: true,
+      animatePages: true,
+      swipeBackPage: true,
+      modalTitle: "DescartesLab",
+      modalButtonCancel: "Cancelar",
+      modalPreloaderTitle: "Carregando...",
+      smartSelectBackText: 'Voltar',
+      smartSelectPopupCloseText: 'Fechar',
+      smartSelectPickerCloseText: 'Definir',
+      init: false,
+      preloadPreviousPage : false,
+      uniqueHistory : true,
+      modalCloseByOutside : true,
+      popupCloseByOutside : true,
+      actionsCloseByOutside : true
+    });
+
     if(page == "addendereco")
     {
-      document.getElementById(page+"_nav").innerHTML = "Cadastrar endereço";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
       document.getElementById("nome").placeholder = "Nome do endereço";
       document.getElementById("rua").placeholder = "Rua";
@@ -1633,17 +1657,17 @@ function traduzir(page)
     }
     else if(page == "agendamentos")
     {
-      document.getElementById(page+"_nav").innerHTML = "Agendamentos";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
-      document.getElementById(page+"_espera").innerHTML = "Em espera";
-      document.getElementById(page+"_aceitos").innerHTML = "Aceitos";
-      document.getElementById(page+"_atrasados").innerHTML = "Atrasados";
-      document.getElementById(page+"_realizados").innerHTML = "Realizados";
-      document.getElementById(page+"_cancelados").innerHTML = "Cancelados";
+      document.getElementById(page+"_espera").innerHTML = '<i class="fa fa-hourglass-1" style="margin:20px;"></i>  Em espera';
+      document.getElementById(page+"_aceitos").innerHTML = '<i class="fa fa-hourglass-2" style="margin:20px;"></i>  Aceitos';
+      document.getElementById(page+"_atrasados").innerHTML = '<i class="fa fa-hourglass-3" style="margin:20px;"></i>  Atrasados';
+      document.getElementById(page+"_realizados").innerHTML = '<i class="fa fa-calendar-check-o" style="margin:20px;"></i>  Realizados';
+      document.getElementById(page+"_cancelados").innerHTML = '<i class="fa fa-calendar-times-o" style="margin:20px;"></i>  Cancelados';
     }
     else if(page == "agendar")
     {
-      document.getElementById(page+"_nav").innerHTML = "Agendar coleta";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
       document.getElementById("data_agendamento").placeholder = "Data da coleta";
       document.getElementById("horario_agendamento").placeholder = "Horário da coleta";
@@ -1657,7 +1681,7 @@ function traduzir(page)
     }
     else if(page == "altsenha")
     {
-      document.getElementById(page+"_nav").innerHTML = "Alterar Senha";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
       document.getElementById("usuario_senha_antiga").placeholder = "Senha atual";
       document.getElementById("usuario_senha1").placeholder = "Nova senha";
@@ -1667,6 +1691,8 @@ function traduzir(page)
     }
     else if(page == "cadastro")
     {
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
+
       document.getElementById("cadastro_nome").innerHTML = "Nome";
       document.getElementById("cad_nome").placeholder = "Ex: João da Silva";
       document.getElementById("cad_email").placeholder = "Ex: joão@servidor.com";
@@ -1680,21 +1706,17 @@ function traduzir(page)
       document.getElementById("cadastro_cadastrar").innerHTML = "Cadastrar";
       document.getElementById("cadastro_login").innerHTML = "Já possui cadastro? Clique aqui!";
     }
-    else if(page == "enderecos")
-    {
-      document.getElementById(page+"_nav").innerHTML = "Endereços";
-    }
     else if(page == "index")
     {
-      document.getElementById("index_filtros").innerHTML = "Filters";
-    }
-    else if(page == "notificacoes")
-    {
-      document.getElementById(page+"_nav").innerHTML = "Notificações";
+      document.getElementById("pac-input").placeholder = "Localidade";
+      document.getElementById("index_cancela_pesquisa").innerHTML = "Cancelar";
+      document.getElementById("index_apagar").innerHTML = "Deletar rota";
+      document.getElementById("index_filtrar_materiais").innerHTML = "Filtrar por materiais";
+      document.getElementById("index_aplicar").innerHTML = "Aplicar";
     }
     else if(page == "perfil")
     {
-      document.getElementById(page+"_nav").innerHTML = "Perfil";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
       document.getElementById("usuario_nome").placeholder = "Seu nome";
       document.getElementById("usuario_telefone").placeholder = "Telefone";
@@ -1703,7 +1725,7 @@ function traduzir(page)
     }
     else if(page == "sobre")
     {
-      document.getElementById(page+"_nav").innerHTML = "Sobre";
+      document.getElementById(page+"_nav").innerHTML = "Voltar";
 
       document.getElementById("sobre_descricao").innerHTML = "Desenvolvido pela equipe que representa Santa Catarina no desafio por equipe, na área de Tecnologia da Informação e Comunicação na Olimpíada do Conhecimento 2016.";
       document.getElementById("sobre_membros").innerHTML = "Membros da equipe";
@@ -1715,9 +1737,27 @@ function traduzir(page)
   }
   else
   {
+    myApp = new Framework7({
+      pushState: true,
+      animatePages: true,
+      swipeBackPage: true,
+      modalTitle: "DescartesLab",
+      modalButtonCancel: "Cancel",
+      modalPreloaderTitle: "Loading...",
+      smartSelectBackText: 'Back',
+      smartSelectPopupCloseText: 'Close',
+      smartSelectPickerCloseText: 'Done',
+      init: false,
+      preloadPreviousPage : false,
+      uniqueHistory : true,
+      modalCloseByOutside : true,
+      popupCloseByOutside : true,
+      actionsCloseByOutside : true
+    }); 
+
     if(page == "addendereco")
     {
-      document.getElementById(page+"_nav").innerHTML = "Create new address";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
       document.getElementById("nome").placeholder = "Address name";
       document.getElementById("rua").placeholder = "Street";
@@ -1731,17 +1771,17 @@ function traduzir(page)
     }
     else if(page == "agendamentos")
     {
-      document.getElementById(page+"_nav").innerHTML = "Schedulings";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
-      document.getElementById(page+"_espera").innerHTML = "Waiting";
-      document.getElementById(page+"_aceitos").innerHTML = "Accepted";
-      document.getElementById(page+"_atrasados").innerHTML = "Late";
-      document.getElementById(page+"_realizados").innerHTML = "Accomplished";
-      document.getElementById(page+"_cancelados").innerHTML = "Canceled";
+      document.getElementById(page+"_espera").innerHTML = '<i class="fa fa-hourglass-1" style="margin:20px;"></i>  Waiting';
+      document.getElementById(page+"_aceitos").innerHTML = '<i class="fa fa-hourglass-2" style="margin:20px;"></i>  Accepted';
+      document.getElementById(page+"_atrasados").innerHTML = '<i class="fa fa-hourglass-3" style="margin:20px;"></i>  Late';
+      document.getElementById(page+"_realizados").innerHTML = '<i class="fa fa-calendar-check-o" style="margin:20px;"></i>  Accomplished';
+      document.getElementById(page+"_cancelados").innerHTML = '<i class="fa fa-calendar-times-o" style="margin:20px;"></i>  Canceled';
     }
     else if(page == "agendar")
     {
-      document.getElementById(page+"_nav").innerHTML = "Schedule pickup";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
       document.getElementById("data_agendamento").placeholder = "Pickup date";
       document.getElementById("horario_agendamento").placeholder = "Pickup time";
@@ -1755,7 +1795,7 @@ function traduzir(page)
     }
     else if(page == "altsenha")
     {
-      document.getElementById(page+"_nav").innerHTML = "Password update";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
       document.getElementById("usuario_senha_antiga").placeholder = "Atual password";
       document.getElementById("usuario_senha1").placeholder = "New password";
@@ -1765,6 +1805,8 @@ function traduzir(page)
     }
     else if(page == "cadastro")
     {
+      document.getElementById(page+"_nav").innerHTML = "Back";
+
       document.getElementById("cadastro_nome").innerHTML = "Name";
       document.getElementById("cad_nome").placeholder = "Ex: Jhon Titor";
       document.getElementById("cad_email").placeholder = "Ex: jhon@server.com";
@@ -1776,23 +1818,19 @@ function traduzir(page)
       document.getElementById("cadastro_telefone").innerHTML = "Telephone";
       document.getElementById("cad_telefone").placeholder = "Ex: 554995965584";
       document.getElementById("cadastro_cadastrar").innerHTML = "Register";
-      document.getElementById("cadastro_login").innerHTML = "Already resgistered? Click here!";
-    }
-    else if(page == "enderecos")
-    {
-      document.getElementById(page+"_nav").innerHTML = "Addresses";
+      document.getElementById("cadastro_login").innerHTML = "Already registered? Click here!";
     }
     else if(page == "index")
     {
-      document.getElementById("index_filtros").innerHTML = "Filters";
-    }
-    else if(page == "notificacoes")
-    {
-      document.getElementById(page+"_nav").innerHTML = "Notifications";
+      document.getElementById("pac-input").placeholder = "Place";
+      document.getElementById("index_cancela_pesquisa").innerHTML = "Cancel";
+      document.getElementById("index_apagar").innerHTML = "Delete route";
+      document.getElementById("index_filtrar_materiais").innerHTML = "Filter by trash type";
+      document.getElementById("index_aplicar").innerHTML = "Apply";
     }
     else if(page == "perfil")
     {
-      document.getElementById(page+"_nav").innerHTML = "Profile";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
       document.getElementById("usuario_nome").placeholder = "Your name";
       document.getElementById("usuario_telefone").placeholder = "Telephone";
@@ -1801,7 +1839,7 @@ function traduzir(page)
     }
     else if(page == "sobre")
     {
-      document.getElementById(page+"_nav").innerHTML = "About";
+      document.getElementById(page+"_nav").innerHTML = "Back";
 
       document.getElementById("sobre_descricao").innerHTML = "Developed by the team that represents Santa Catarina in the team challenge, in the area of ​​Information and Communication Technology at the 2016 Olimpíada do Conhecimento.";
       document.getElementById("sobre_membros").innerHTML = "Team members";
