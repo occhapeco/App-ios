@@ -16,7 +16,7 @@ if(localStorage.getItem("idioma") == "fr")
       modalTitle: "DescartesLab",
       modalButtonCancel: "Annuler",
       modalPreloaderTitle: "Chargement...",
-      smartSelectBackText: 'Arrière',
+      smartSelectBackText: 'Retour',
       smartSelectPopupCloseText: 'Fermer',
       smartSelectPickerCloseText: 'Terminé',
       init: false,
@@ -998,8 +998,9 @@ function mostrar_tela_login()
                                                             '</ul>'+
                                                           '</div>'+
                                                           '<div class="list-block-label" style="padding-left:15px;padding-right:15px;">'+
-                                                              '<p><a onclick="login();" class="button">Entrar</a></p>'+
+                                                              '<p><a onclick="login();" class="button">Entrer</a></p>'+
                                                               '<p><a href="cadastro.html" class="button">Pas encore de compte? Cliquez ici!</a></p>'+
+                                                              '<p><a href="#" class="button" onclick="trocar()">Mudar para Português</a></p>'+
                                                           '</div>'+
                                                         '</div>'+
                                                       '</div>'+
@@ -1032,11 +1033,21 @@ function mostrar_tela_login()
                                                             '<div class="list-block-label" style="padding-left:15px;padding-right:15px;">'+
                                                                 '<p><a onclick="login();" class="button">Entrar</a></p>'+
                                                                 '<p><a href="cadastro.html" class="button">Não possui cadastro? Clique aqui!</a></p>'+
+                                                                '<p><a href="#" class="button" onclick="trocar()">Passez en français</a></p>'+
                                                             '</div>'+
                                                           '</div>'+
                                                         '</div>'+
                                                         '</div>'+
                                                       '</div>';
+}
+
+function trocar()
+{
+  if(localStorage.getItem("idioma") == "fr")
+    localStorage.setItem("idioma","pt");
+  else
+    localStorage.setItem("idioma","fr");
+  mostrar_tela_login();
 }
 
 function remover_menu()
@@ -1058,10 +1069,9 @@ function login()
     {
       localStorage.setItem("login_id",id);
       $$("#ba").show();
-      cria_login();
       criar_menu();
       mostrar_tela_mapa();
-      //mapa_refresh();
+      mapa_refresh();
     }
     else
     {
@@ -1073,75 +1083,6 @@ function login()
     myApp.hidePreloader();
     mainView.refreshPage();
   },100);
-}
-
-function cria_login(){
-  if(localStorage.getItem("idioma") == "fr")
-    document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
-                                                 ' <div class="left">'+
-                                                    '<a href="#" class="link icon-only" onclick="pan();" id="bc"> <i class="icon icon-bars"></i></a>'+
-                                                    '<div id="hd">'+
-                                                     ' DescartesLab'+
-                                                   ' </div>'+
-                                                 ' </div>'+
-                                                 ' <div id="hc" class="hi" style="width:100%;">'+
-                                                    '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
-                                                     ' <div class="searchbar-input">'+
-                                                       ' <input id="pac-input" class="controls" type="search" placeholder="Location" data-tap-disabled="true">'+
-                                                     ' </div>'+
-                                                      '<a href="#" class="searchbar-cancel" onclick="inverte();">Annuler</a>'+
-                                                    '</form>'+
-                                                  '</div>'+
-                                                  '<div class="center">'+
-                                                    '<div onclick="cancela_rota();" id="hb" class="hi">'+
-                                                     ' Supprimer l`itinéraire <i class="fa fa-remove"></i>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<div class="right" style="margin-left: 0 !important">'+
-                                                    '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
-                                                      '<i class="fa fa-filter"></i>'+
-                                                   ' </a>'+
-                                                    '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
-                                                     ' <i class="fa fa-refresh"></i>'+
-                                                    '</a>'+
-                                                   ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
-                                                        '<i class="fa fa-search" id="loc"></i>'+
-                                                    '</a>'+
-                                                 ' </div>'+
-                                                '</div>';
-  else
-    document.getElementById('ba').innerHTML = '<div class="navbar-inner"  style="padding: 0 0 0 8px !important">'+
-                                                 ' <div class="left">'+
-                                                    '<a href="#" class="link icon-only" onclick="pan();" id="bc"> <i class="icon icon-bars"></i></a>'+
-                                                    '<div id="hd">'+
-                                                     ' DescartesLab'+
-                                                   ' </div>'+
-                                                 ' </div>'+
-                                                 ' <div id="hc" class="hi" style="width:100%;">'+
-                                                    '<form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">'+
-                                                     ' <div class="searchbar-input">'+
-                                                       ' <input id="pac-input" class="controls" type="search" placeholder="Localidade" data-tap-disabled="true">'+
-                                                     ' </div>'+
-                                                      '<a href="#" class="searchbar-cancel" onclick="inverte();">Cancelar</a>'+
-                                                    '</form>'+
-                                                  '</div>'+
-                                                  '<div class="center">'+
-                                                    '<div onclick="cancela_rota();" id="hb" class="hi">'+
-                                                     ' Apagar rota <i class="fa fa-remove"></i>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<div class="right" style="margin-left: 0 !important">'+
-                                                    '<a href="#" class="link icon-only open-popover" id="popover-btn" style="width:30px !important; min-width: 0 !important;">'+
-                                                      '<i class="fa fa-filter"></i>'+
-                                                   ' </a>'+
-                                                    '<a onclick="mapa_refresh();" class="link icon-only" id="refresh" style="width:30px !important; min-width: 0 !important;">'+
-                                                     ' <i class="fa fa-refresh"></i>'+
-                                                    '</a>'+
-                                                   ' <a onclick="inverte();" id="searche" class="link icon-only" style="width:30px !important; min-width: 0 !important;margin-right: 10px;">'+
-                                                        '<i class="fa fa-search" id="loc"></i>'+
-                                                    '</a>'+
-                                                 ' </div>'+
-                                                '</div>';
 }
 
 function logout()
@@ -1751,7 +1692,7 @@ function traduzir(page)
       modalTitle: "DescartesLab",
       modalButtonCancel: "Annuler",
       modalPreloaderTitle: "Chargement...",
-      smartSelectBackText: 'Arrière',
+      smartSelectBackText: 'Retour',
       smartSelectPopupCloseText: 'Fermer',
       smartSelectPickerCloseText: 'Terminé',
       init: false,
@@ -1764,7 +1705,7 @@ function traduzir(page)
 
     if(page == "addendereco")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("nome").placeholder = "Nom de l'adresse";
       document.getElementById("rua").placeholder = "Rue";
@@ -1778,7 +1719,7 @@ function traduzir(page)
     }
     else if(page == "agendamentos")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById(page+"_espera").innerHTML = '<i class="fa fa-hourglass-1" style="margin:20px;"></i>  Attendre';
       document.getElementById(page+"_aceitos").innerHTML = '<i class="fa fa-hourglass-2" style="margin:20px;"></i>  Accepté';
@@ -1788,7 +1729,7 @@ function traduzir(page)
     }
     else if(page == "agendar")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("data_agendamento").placeholder = "Date de ramassage";
       document.getElementById("horario_agendamento").placeholder = "Heure de ramassage";
@@ -1802,7 +1743,7 @@ function traduzir(page)
     }
     else if(page == "altsenha")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("usuario_senha_antiga").placeholder = "Mot de passe";
       document.getElementById("usuario_senha1").placeholder = "Nouveau mot de passe";
@@ -1812,7 +1753,7 @@ function traduzir(page)
     }
     else if(page == "cadastro")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("cadastro_nome").innerHTML = "Nom";
       document.getElementById("cad_nome").placeholder = "Ex: Jhon Titor";
@@ -1837,7 +1778,7 @@ function traduzir(page)
     }
     else if(page == "perfil")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("usuario_nome").placeholder = "Votre nom";
       document.getElementById("usuario_telefone").placeholder = "Téléphone";
@@ -1846,7 +1787,7 @@ function traduzir(page)
     }
     else if(page == "sobre")
     {
-      document.getElementById(page+"_nav").innerHTML = "Arrière";
+      document.getElementById(page+"_nav").innerHTML = "Retour";
 
       document.getElementById("sobre_descricao").innerHTML = "Développé par l'équipe qui représente Santa Catarina dans le challenge d'équipe, dans le domaine des Technologies de l'Information et de la Communication à l'Olimpíada do Conhecimento 2016.";
       document.getElementById("sobre_membros").innerHTML = "Membres de l'équipe";
