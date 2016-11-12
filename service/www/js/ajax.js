@@ -1,5 +1,5 @@
 var xhrTimeout=1000;
-var url='http://descarteslab.sc.senai.br/service/';
+var url='http://192.168.1.138/descarteslab/service/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var ponto_id = 0;

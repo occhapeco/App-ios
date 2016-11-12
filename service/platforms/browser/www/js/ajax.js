@@ -1,5 +1,5 @@
 var xhrTimeout=1000;
-var url='http://descarteslab.sc.senai.br/service/';
+var url='http://192.168.1.138/descarteslab/service/';
 var urn = 'urn:descartes';
 var empresa_id = 0;
 var ponto_id = 0;
@@ -1609,7 +1609,7 @@ function traduzir(page)
       document.getElementById("cadastro_cadastrar").innerHTML = "Cadastrar";
       document.getElementById("cadastro_login").innerHTML = "Já possui cadastro? Clique aqui!";
     }
-    else if(page == "index")
+    else if(page == "index" && localStorage.getItem("login_id") != null)
     {
       document.getElementById("pac-input").placeholder = "Localidade";
       document.getElementById("index_cancela_pesquisa").innerHTML = "Cancelar";
@@ -1721,7 +1721,7 @@ function traduzir(page)
       document.getElementById("cadastro_cadastrar").innerHTML = "Registre";
       document.getElementById("cadastro_login").innerHTML = "Déjà enregistré? Cliquez ici!";
     }
-    else if(page == "index")
+    else if(page == "index" && localStorage.getItem("login_id") != null)
     {
       document.getElementById("pac-input").placeholder = "Endroit";
       document.getElementById("index_cancela_pesquisa").innerHTML = "Annuler";
