@@ -285,63 +285,6 @@ function inicializar()
   //localStorage.removeItem("tutorial");
 }
 
-function tutorial()
-{
-  /*if(localStorage.getItem("tutorial") != 3)
-  {
-    if(localStorage.getItem("tutorial") == null)
-      localStorage.setItem("tutorial",0);
-
-    var popoverHTML = "";
-    var component = null;
-    
-    if(localStorage.getItem("tutorial") == 0)
-    {
-      component = document.getElementById("map");
-      popoverHTML = '<div class="popover" onclose="tutorial();" style="margin-top:50px;z-index:1333331 !important;">'+
-                      '<div class="popover-angle"></div>'+
-                      '<div class="popover-inner">'+
-                        '<div class="content-block">'+
-                          '<p style="font-size:18px;">Bem-vindo ao Descartes Lab! Aqui você pode encontrar pontos de coleta de lixo próximos de você.</p>'+
-                          '<p style="font-size:12px;">Toque em qualquer lugar para continuar.</p>'+
-                        '</div>'+
-                      '</div>'+
-                    '</div>';
-    }
-    else if(localStorage.getItem("tutorial") == 1)
-    {
-      $$('#searche').click();
-      component = document.getElementById("searche");
-      popoverHTML = '<div class="popover" onclose="tutorial();" style="margin-top:50px;z-index:1333331 !important;">'+
-                      '<div class="popover-angle"></div>'+
-                      '<div class="popover-inner">'+
-                        '<div class="content-block">'+
-                          '<p style="font-size:18px;">Pesquise qualquer localização aqui.</p>'+
-                          '<p style="font-size:12px;">Toque em qualquer lugar para continuar.</p>'+
-                        '</div>'+
-                      '</div>'+
-                    '</div>';
-    }
-    else if(localStorage.getItem("tutorial") == 2)
-    {
-      $$('#searche').click();
-      component = document.getElementById("popover-btn");
-      popoverHTML = '<div class="popover" onclose="tutorial();" style="z-index:1333331 !important;">'+
-                      '<div class="popover-angle"></div>'+
-                      '<div class="popover-inner">'+
-                        '<div class="content-block">'+
-                          '<p style="font-size:18px;">Selecione aqui os tipos de lixo que você precisa descartar.</p>'+
-                          '<p style="font-size:12px;">Toque em qualquer lugar para continuar.</p>'+
-                        '</div>'+
-                      '</div>'+
-                    '</div>';
-    }
-
-    localStorage.setItem("tutorial",localStorage.getItem("tutorial") + 1);
-    myApp.popover(popoverHTML,component);
-  }*/
-}
-
 function criar_agendamento()
 {
   myApp.showPreloader();
@@ -995,13 +938,13 @@ function mostrar_tela_login()
                                                                 '<div class="item-inner">'+
                                                                   '<div class="item-title label">Email</div>'+
                                                                     '<div class="item-input">'+
-                                                                      '<input type="email" name="login_email" id="login_email" placeholder="ex: jhon@server.com" required>'+
+                                                                      '<input type="email" name="login_email" id="login_email" placeholder="Ex: jhon@server.com" required>'+
                                                                     '</div>'+
                                                                 '</div>'+
                                                               '</li>'+
                                                               '<li class="item-content">'+
                                                                 '<div class="item-inner">'+
-                                                                  '<div class="item-title label">Senha</div>'+
+                                                                  '<div class="item-title label">Passe</div>'+
                                                                     '<div class="item-input">'+
                                                                       '<input type="password" name="login_senha" id="login_senha" placeholder="Ex: *******" required>'+
                                                                     '</div>'+
@@ -1028,7 +971,7 @@ function mostrar_tela_login()
                                                                   '<div class="item-inner">'+
                                                                     '<div class="item-title label">Email</div>'+
                                                                       '<div class="item-input">'+
-                                                                        '<input type="email" name="login_email" id="login_email" placeholder="ex: joão@servidor.com" required>'+
+                                                                        '<input type="email" name="login_email" id="login_email" placeholder="Ex: joão@servidor.com" required>'+
                                                                       '</div>'+
                                                                   '</div>'+
                                                                 '</li>'+
@@ -1036,7 +979,7 @@ function mostrar_tela_login()
                                                                   '<div class="item-inner">'+
                                                                     '<div class="item-title label">Senha</div>'+
                                                                       '<div class="item-input">'+
-                                                                        '<input type="password" name="login_senha" id="login_senha" placeholder="ex: *******" required>'+
+                                                                        '<input type="password" name="login_senha" id="login_senha" placeholder="Ex: *******" required>'+
                                                                       '</div>'+
                                                                   '</div>'+
                                                                 '</li>'+
@@ -1660,13 +1603,13 @@ function traduzir(page)
       document.getElementById("cad_senha").placeholder = "Ex: *******";
       document.getElementById("cadastro_senha_novamente").innerHTML = "Senha novamente";
       document.getElementById("cad_senha2").placeholder = "Ex: *******";
-      document.getElementById("cad_cpf").placeholder = "ex: 12345678911";document.getElementById("cadastro_nome").innerHTML = "";
+      document.getElementById("cad_cpf").placeholder = "Ex: 12345678911";document.getElementById("cadastro_nome").innerHTML = "";
       document.getElementById("cadastro_telefone").innerHTML = "Telefone";
       document.getElementById("cad_telefone").placeholder = "Ex: 554995965584";
       document.getElementById("cadastro_cadastrar").innerHTML = "Cadastrar";
       document.getElementById("cadastro_login").innerHTML = "Já possui cadastro? Clique aqui!";
     }
-    else if(page == "index")
+    else if(page == "index" && localStorage.getItem("login_id") != null)
     {
       document.getElementById("pac-input").placeholder = "Localidade";
       document.getElementById("index_cancela_pesquisa").innerHTML = "Cancelar";
@@ -1765,8 +1708,6 @@ function traduzir(page)
     }
     else if(page == "cadastro")
     {
-      document.getElementById(page+"_nav").innerHTML = "Retour";
-
       document.getElementById("cadastro_nome").innerHTML = "Nom";
       document.getElementById("cad_nome").placeholder = "Ex: Jhon Titor";
       document.getElementById("cad_email").placeholder = "Ex: jhon@server.com";
@@ -1774,13 +1715,13 @@ function traduzir(page)
       document.getElementById("cad_senha").placeholder = "Ex: *******";
       document.getElementById("cadastro_senha_novamente").innerHTML = "Mot de passe";
       document.getElementById("cad_senha2").placeholder = "Ex: *******";
-      document.getElementById("cad_cpf").placeholder = "Ex: 12345678911";document.getElementById("cadastro_nome").innerHTML = "";
+      document.getElementById("cad_cpf").placeholder = "Ex: 12345678911";
       document.getElementById("cadastro_telefone").innerHTML = "Téléphone";
       document.getElementById("cad_telefone").placeholder = "Ex: 554995965584";
       document.getElementById("cadastro_cadastrar").innerHTML = "Registre";
       document.getElementById("cadastro_login").innerHTML = "Déjà enregistré? Cliquez ici!";
     }
-    else if(page == "index")
+    else if(page == "index" && localStorage.getItem("login_id") != null)
     {
       document.getElementById("pac-input").placeholder = "Endroit";
       document.getElementById("index_cancela_pesquisa").innerHTML = "Annuler";
